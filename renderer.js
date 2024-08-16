@@ -1,7 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Display all packages when the app starts
     performSearch();
+    setupBoardSelection();
 });
+
+let selectedBoard = null;  // Variable to keep track of the selected board
+
+function setupBoardSelection() {
+    const boardItems = document.querySelectorAll('.board-item');
+
+    boardItems.forEach(board => {
+        board.addEventListener('click', () => {
+            // Unselect all boards
+            boardItems.forEach(b => b.classList.remove('selected'));
+
+            // Mark the clicked board as selected
+            board.classList.add('selected');
+            selectedBoard = board.textContent;
+
+            // Enable the install buttons if a board is selected
+            updateInstallButtonsState();
+        });
+    });
+
+    // Disable the install buttons if no board is selected on page load
+    updateInstallButtonsState();
+}
+
+function updateInstallButtonsState() {
+    const installButtons = document.querySelectorAll('.install');
+    const manualInstallButton = document.getElementById('manual-install-btn');
+
+    // Disable or enable buttons based on board selection
+    const buttonsDisabled = !selectedBoard;
+
+    installButtons.forEach(button => button.disabled = buttonsDisabled);
+    manualInstallButton.disabled = buttonsDisabled;
+}
 
 function performSearch() {
     const searchField = document.getElementById('search-field');
@@ -39,7 +74,7 @@ function renderPackageList(packages, searchTerm) {
                 <div class="package-license">Licensed under ${pkg.license}</div>
             </div>
             <div class="package-buttons">
-                <button class="install">Install</button>
+                <button class="install primary">Install</button>
                 <button class="read-more">More info</button>
             </div>
         `;
@@ -64,6 +99,8 @@ function renderPackageList(packages, searchTerm) {
 }
 
 function installPackage(pkg) {
+    if (!selectedBoard) return; // Safety check
+
     const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
     const installButtons = document.querySelectorAll('.install');
@@ -78,20 +115,21 @@ function installPackage(pkg) {
     githubUrlInput.disabled = true;
     manualInstallButton.disabled = true;  // Disable GitHub install button
     boardItems.forEach(board => board.style.pointerEvents = 'none');
-    
+
     overlay.classList.add('show');
-    statusField.textContent = `Installing ${pkg.title}...`;
+    statusField.textContent = `Installing ${pkg.title} on ${selectedBoard}...`;
 
     setTimeout(() => {
-        statusField.textContent = `${pkg.title} installation complete.`;
+        statusField.textContent = `${pkg.title} installation complete on ${selectedBoard}.`;
 
         // Re-enable all UI components after installation completes
-        installButtons.forEach(button => button.disabled = false);
         searchField.disabled = false;
         githubUrlInput.disabled = false;
-        manualInstallButton.disabled = false;  // Re-enable GitHub install button
         boardItems.forEach(board => board.style.pointerEvents = 'auto');
-        
+
+        // Only enable install buttons if a board is still selected
+        updateInstallButtonsState();
+
         overlay.classList.remove('show');
     }, 2000); // Simulate installation time
 }
@@ -144,6 +182,8 @@ function toggleAdvancedOptions() {
 }
 
 function manualInstall() {
+    if (!selectedBoard) return; // Safety check
+
     const githubUrl = document.getElementById('github-url').value;
     const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
@@ -161,20 +201,22 @@ function manualInstall() {
     overlay.classList.add('show');
     searchField.disabled = true;
     githubUrlInput.disabled = true;
-    manualInstallButton.disabled = true;  // Disable GitHub install button
+    manualInstallButton.disabled = true;
     boardItems.forEach(board => board.style.pointerEvents = 'none');
 
-    statusField.textContent = `Installing from ${githubUrl}...`;
+    statusField.textContent = `Installing from ${githubUrl} on ${selectedBoard}...`;
 
     // Simulate installation process
     setTimeout(() => {
-        statusField.textContent = `Installation from ${githubUrl} complete.`;
+        statusField.textContent = `Installation from ${githubUrl} complete on ${selectedBoard}.`;
 
         // Re-enable all components
         overlay.classList.remove('show');
         searchField.disabled = false;
         githubUrlInput.disabled = false;
-        manualInstallButton.disabled = false;  // Re-enable GitHub install button
         boardItems.forEach(board => board.style.pointerEvents = 'auto');
+
+        // Only enable install buttons if a board is still selected
+        updateInstallButtonsState();
     }, 2000);
 }
