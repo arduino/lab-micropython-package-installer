@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroPython Package Installer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Upper Section -->
+    <div class="upper-section">
+        <div class="main-container">
+            <h1>MicroPython Package Installer</h1>
+
+            <!-- Detected Boards Title -->
+            <div class="section-title">Detected Boards</div>
+
+            <!-- Board Selection -->
+            <div id="board-selection">
+                <!-- Example board items -->
+                <div class="board-item">Portenta H7</div>
+                <div class="board-item">Giga R1</div>
+                <div class="board-item">Nano 33 BLE</div>
+            </div>
+
+            <!-- Status -->
+            <div id="status">Ready</div>
+
+            <!-- Packages Title -->
+            <div class="section-title">Packages</div>
+
+            <!-- Search Field -->
+            <div class="search-container">
+                <div id="search">
+                    <span id="search-icon">
+                        <!-- Magnifying glass SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.44.681a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                        </svg>
+                    </span>
+                    <input id="search-field" type="search" placeholder="Search package..." oninput="performSearch()">
+                </div>
+                <div id="results-count" style="display: none;">0 packages found</div>
+            </div>
+            
+            <div id="advanced-options-toggle" class="advanced-toggle" onclick="toggleAdvancedOptions()">
+                <span id="disclosure-icon">&#9656;</span> <!-- Right-pointing triangle -->
+                Advanced Options
+            </div>
+            <div id="advanced-options" class="advanced-options" style="display: none;">
+                <label for="github-url">GitHub URL:</label>
+                <input type="text" id="github-url" placeholder="Enter GitHub URL for package">
+                <button id="manual-install-btn" onclick="manualInstall()">Install</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <hr class="divider">
+
+    <!-- Lower Section -->
+    <div class="lower-section">
+        <div class="main-container">
+            <div id="package-list" class="scrollable-content">
+                <!-- Package items will be dynamically added here by renderer.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the renderer.js script -->
+    <script src="renderer.js"></script>
+
+</body>
+</html>

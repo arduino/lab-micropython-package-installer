@@ -1,0 +1,236 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.upper-section {
+    background-color: #fff; /* White background for the upper section */
+    padding: 20px 0;
+}
+
+.lower-section {
+    background-color: #F9F9F9; /* Light gray background for the lower section */
+    flex-grow: 1; /* Allows this section to fill remaining space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-top: 20px;
+}
+
+.main-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0 20px; /* Adjusted padding for consistency */
+}
+
+.section-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.divider {
+    border: none;
+    border-top: 2px solid #C9D2D2;
+    margin: 0;
+    width: 100%;
+}
+
+#board-selection {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.board-item {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.board-item:hover {
+    background-color: #e0e0e0;
+}
+
+#status {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#search {
+    margin-bottom: 20px;
+}
+
+#search-field {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+#package-list {
+    list-style: none;
+    padding: 0;
+}
+
+.package-item {
+    padding: 10px 0; /* Adjusted padding for vertical spacing */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Removed border and background color */
+}
+
+.package-divider {
+    border-top: 1px solid #DAE3E3; /* Divider line after each package */
+    margin: 10px 0; /* Spacing around the divider */
+}
+
+.package-info {
+    max-width: 80%;
+}
+
+.package-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.package-title {
+    font-weight: 600;
+}
+
+.exact-match-tag {
+    padding: 2px 6px;
+    background-color: #ffd700;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.package-description {
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.package-tags {
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+.tag {
+    padding: 2px 6px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+.package-license {
+    margin-top: 5px;
+    font-size: 0.8em;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.package-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+button.install {
+    background-color: #28a745;
+    color: white;
+}
+
+button.read-more {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Search Container */
+.search-container {
+    margin-bottom: 20px;
+}
+
+/* Search Box */
+#search {
+    position: relative;
+    width: 100%;
+}
+
+#search-field {
+    width: 100%;
+    padding: 10px 30px 10px 30px; /* Adjusted padding for icon space */
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+/* Magnifying Glass SVG Icon */
+#search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 1.2em;
+    color: #555;
+}
+
+/* Results Count */
+#results-count {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+}
+
+/* Advanced Options Toggle */
+.advanced-toggle {
+    cursor: pointer;
+    color: #2196F3;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.advanced-toggle #disclosure-icon {
+    margin-right: 8px; /* Add some spacing between the triangle and the text */
+}
+
+.advanced-options {
+    margin-top: 10px;
+}
+
+.advanced-options input {
+    padding: 8px;
+    width: calc(100% - 120px); /* Adjust width for button space */
+    margin-right: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.advanced-options button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
