@@ -1,10 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
+    fetchPackages(); // Fetch packages when the app starts
     // Display all packages when the app starts
     performSearch();
     setupBoardSelection();
 });
 
 let selectedBoard = null;  // Variable to keep track of the selected board
+
+async function fetchPackages() {
+    try {
+        const packages = await window.api.getPackages();
+        console.log(packages);
+        renderPackageList(packages, ''); // Render the fetched packages
+    } catch (error) {
+        console.error('Failed to fetch packages:', error);
+    }
+}
 
 function setupBoardSelection() {
     const boardItems = document.querySelectorAll('.board-item');
@@ -41,30 +52,31 @@ function updateInstallButtonsState() {
 function performSearch() {
     const searchField = document.getElementById('search-field');
     const searchTerm = searchField.value.toLowerCase();
-    const packages = getPackages(); // Replace with actual API call or data source
 
-    const filteredPackages = searchTerm === '' ? packages : packages.filter(pkg => 
-        pkg.title.toLowerCase().includes(searchTerm) ||
-        pkg.author.toLowerCase().includes(searchTerm)
-    );
+    window.api.getPackages().then(packages => {
+        const filteredPackages = searchTerm === '' ? packages : packages.filter(pkg =>
+            pkg.name.toLowerCase().includes(searchTerm) ||
+            pkg.authors.some(author => author.toLowerCase().includes(searchTerm))
+        );
 
-    renderPackageList(filteredPackages, searchTerm);
-    updateResultsCount(filteredPackages.length, searchTerm);
+        renderPackageList(filteredPackages, searchTerm);
+        updateResultsCount(filteredPackages.length, searchTerm);
+    });
 }
 
 function renderPackageList(packages, searchTerm) {
-    const packageList = document.getElementById('package-list');
+    const packageList = document.getElementById('package-list');    
     packageList.innerHTML = '';
 
     packages.forEach(pkg => {
-        const isExactMatch = pkg.title.toLowerCase() === searchTerm;
+        const isExactMatch = pkg.name.toLowerCase() === searchTerm;
 
         const packageItem = document.createElement('li');
         packageItem.className = 'package-item';
         packageItem.innerHTML = `
             <div class="package-info">
                 <div class="package-title-container">
-                    <div class="package-title">${pkg.title} by ${pkg.author}</div>
+                    <div class="package-title">${pkg.name} by ${pkg.authors.join(', ')}</div>
                     ${isExactMatch ? `<span class="exact-match-tag">Exact Match</span>` : ''}
                 </div>
                 <div class="package-description">${pkg.description}</div>
@@ -74,7 +86,7 @@ function renderPackageList(packages, searchTerm) {
                 <div class="package-license">Licensed under ${pkg.license}</div>
             </div>
             <div class="package-buttons">
-                <button class="install primary">Install</button>
+                <button class="install">Install</button>
                 <button class="read-more">More info</button>
             </div>
         `;
@@ -89,7 +101,7 @@ function renderPackageList(packages, searchTerm) {
         const moreInfoButton = packageItem.querySelector('.read-more');
 
         installButton.addEventListener('click', () => {
-            installPackage(pkg);
+            installPackage(pkg.name);
         });
 
         moreInfoButton.addEventListener('click', () => {
@@ -98,8 +110,8 @@ function renderPackageList(packages, searchTerm) {
     });
 }
 
-function installPackage(pkg) {
-    if (!selectedBoard) return; // Safety check
+async function installPackage(packageName) {
+    if (!selectedBoard) return;
 
     const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
@@ -109,29 +121,30 @@ function installPackage(pkg) {
     const manualInstallButton = document.getElementById('manual-install-btn');
     const boardItems = document.querySelectorAll('.board-item');
 
-    // Disable all install buttons, search bar, GitHub input, manual install button, and board selection
+    // Disable UI components
     installButtons.forEach(button => button.disabled = true);
     searchField.disabled = true;
     githubUrlInput.disabled = true;
-    manualInstallButton.disabled = true;  // Disable GitHub install button
+    manualInstallButton.disabled = true;
     boardItems.forEach(board => board.style.pointerEvents = 'none');
-
     overlay.classList.add('show');
-    statusField.textContent = `Installing ${pkg.title} on ${selectedBoard}...`;
 
-    setTimeout(() => {
-        statusField.textContent = `${pkg.title} installation complete on ${selectedBoard}.`;
+    statusField.textContent = `Installing ${packageName} on ${selectedBoard}...`;
 
-        // Re-enable all UI components after installation completes
-        searchField.disabled = false;
-        githubUrlInput.disabled = false;
-        boardItems.forEach(board => board.style.pointerEvents = 'auto');
+    const result = await window.api.installPackage(packageName);
 
-        // Only enable install buttons if a board is still selected
-        updateInstallButtonsState();
+    if (result.success) {
+        statusField.textContent = `${packageName} installation complete on ${selectedBoard}.`;
+    } else {
+        statusField.textContent = `Failed to install ${packageName}: ${result.error}`;
+    }
 
-        overlay.classList.remove('show');
-    }, 2000); // Simulate installation time
+    // Re-enable UI components
+    searchField.disabled = false;
+    githubUrlInput.disabled = false;
+    boardItems.forEach(board => board.style.pointerEvents = 'auto');
+    updateInstallButtonsState(); // Re-enable buttons only if a board is selected
+    overlay.classList.remove('show');
 }
 
 function openPackageInfo(pkg) {
