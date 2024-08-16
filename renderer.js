@@ -67,17 +67,31 @@ function installPackage(pkg) {
     const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
     const installButtons = document.querySelectorAll('.install');
+    const searchField = document.getElementById('search-field');
+    const githubUrlInput = document.getElementById('github-url');
+    const manualInstallButton = document.getElementById('manual-install-btn');
+    const boardItems = document.querySelectorAll('.board-item');
 
-    // Disable all install buttons and show overlay
+    // Disable all install buttons, search bar, GitHub input, manual install button, and board selection
     installButtons.forEach(button => button.disabled = true);
+    searchField.disabled = true;
+    githubUrlInput.disabled = true;
+    manualInstallButton.disabled = true;  // Disable GitHub install button
+    boardItems.forEach(board => board.style.pointerEvents = 'none');
+    
     overlay.classList.add('show');
     statusField.textContent = `Installing ${pkg.title}...`;
 
     setTimeout(() => {
         statusField.textContent = `${pkg.title} installation complete.`;
 
-        // Re-enable all install buttons and hide overlay
+        // Re-enable all UI components after installation completes
         installButtons.forEach(button => button.disabled = false);
+        searchField.disabled = false;
+        githubUrlInput.disabled = false;
+        manualInstallButton.disabled = false;  // Re-enable GitHub install button
+        boardItems.forEach(board => board.style.pointerEvents = 'auto');
+        
         overlay.classList.remove('show');
     }, 2000); // Simulate installation time
 }
@@ -133,18 +147,34 @@ function manualInstall() {
     const githubUrl = document.getElementById('github-url').value;
     const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
+    const searchField = document.getElementById('search-field');
+    const githubUrlInput = document.getElementById('github-url');
+    const manualInstallButton = document.getElementById('manual-install-btn');
+    const boardItems = document.querySelectorAll('.board-item');
 
     if (githubUrl.trim() === '') {
         alert('Please enter a valid GitHub URL.');
         return;
     }
 
+    // Disable the same components during manual installation
     overlay.classList.add('show');
+    searchField.disabled = true;
+    githubUrlInput.disabled = true;
+    manualInstallButton.disabled = true;  // Disable GitHub install button
+    boardItems.forEach(board => board.style.pointerEvents = 'none');
+
     statusField.textContent = `Installing from ${githubUrl}...`;
 
     // Simulate installation process
     setTimeout(() => {
         statusField.textContent = `Installation from ${githubUrl} complete.`;
+
+        // Re-enable all components
         overlay.classList.remove('show');
+        searchField.disabled = false;
+        githubUrlInput.disabled = false;
+        manualInstallButton.disabled = false;  // Re-enable GitHub install button
+        boardItems.forEach(board => board.style.pointerEvents = 'auto');
     }, 2000);
 }

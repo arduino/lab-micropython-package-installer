@@ -39,7 +39,7 @@ body {
 }
 
 /* Disabling buttons appearance */
-.lower-section button:disabled {
+.lower-section button:disabled, .advanced-options button:disabled {
     background-color: #ccc; /* Disabled state background */
     color: #666; /* Disabled state text color */
     cursor: not-allowed;
