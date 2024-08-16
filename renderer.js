@@ -1,21 +1,26 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetchPackages(); // Fetch packages when the app starts
-    // Display all packages when the app starts
-    performSearch();
-    setupBoardSelection();
+let cachedPackages = []; // Global variable to cache packages
+
+// Fetch package list once on app load and cache it
+document.addEventListener('DOMContentLoaded', async () => {
+    const packageList = document.getElementById('package-list');
+
+    // Show loading spinner
+    packageList.innerHTML = '<div class="loading-spinner"></div>';
+    
+    try {
+        const packages = await window.api.getPackages();
+        cachedPackages = packages;
+        renderPackageList(cachedPackages, ''); // Render the fetched packages
+        performSearch(); // Initial render with all packages
+        setupBoardSelection();
+    } catch (error) {
+        console.error('Error fetching packages:', error);
+        document.getElementById('package-list').innerHTML = '<p>Error loading packages.</p>';
+    }
 });
 
 let selectedBoard = null;  // Variable to keep track of the selected board
 
-async function fetchPackages() {
-    try {
-        const packages = await window.api.getPackages();
-        console.log(packages);
-        renderPackageList(packages, ''); // Render the fetched packages
-    } catch (error) {
-        console.error('Failed to fetch packages:', error);
-    }
-}
 
 function setupBoardSelection() {
     const boardItems = document.querySelectorAll('.board-item');
@@ -53,19 +58,18 @@ function performSearch() {
     const searchField = document.getElementById('search-field');
     const searchTerm = searchField.value.toLowerCase();
 
-    window.api.getPackages().then(packages => {
-        const filteredPackages = searchTerm === '' ? packages : packages.filter(pkg =>
-            pkg.name.toLowerCase().includes(searchTerm) ||
-            pkg.authors.some(author => author.toLowerCase().includes(searchTerm))
-        );
+    // Use cached package list for filtering
+    const filteredPackages = searchTerm === '' ? cachedPackages : cachedPackages.filter(pkg =>
+        pkg.name.toLowerCase().includes(searchTerm) ||
+        (pkg.author && pkg.author.toLowerCase().includes(searchTerm))
+    );
 
-        renderPackageList(filteredPackages, searchTerm);
-        updateResultsCount(filteredPackages.length, searchTerm);
-    });
+    renderPackageList(filteredPackages, searchTerm);
+    updateResultsCount(filteredPackages.length, searchTerm);
 }
 
 function renderPackageList(packages, searchTerm) {
-    const packageList = document.getElementById('package-list');    
+    const packageList = document.getElementById('package-list');
     packageList.innerHTML = '';
 
     packages.forEach(pkg => {
@@ -73,17 +77,21 @@ function renderPackageList(packages, searchTerm) {
 
         const packageItem = document.createElement('li');
         packageItem.className = 'package-item';
+
+        let authorHTML = pkg.author ? ` by ${pkg.author}` : '';
+        let descriptionHTML = pkg.description ? `<div class="package-description">${pkg.description}</div>` : '';
+        let tagsHTML = pkg.tags && pkg.tags.length ? `<div class="package-tags">${pkg.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : '';
+        let licenseHTML = pkg.license ? `<div class="package-license">Licensed under ${pkg.license}</div>` : '';
+
         packageItem.innerHTML = `
             <div class="package-info">
                 <div class="package-title-container">
-                    <div class="package-title">${pkg.name} by ${pkg.authors.join(', ')}</div>
+                    <div class="package-title">${pkg.name}${authorHTML}</div>
                     ${isExactMatch ? `<span class="exact-match-tag">Exact Match</span>` : ''}
                 </div>
-                <div class="package-description">${pkg.description}</div>
-                <div class="package-tags">
-                    ${pkg.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                </div>
-                <div class="package-license">Licensed under ${pkg.license}</div>
+                ${descriptionHTML}
+                ${tagsHTML}
+                ${licenseHTML}
             </div>
             <div class="package-buttons">
                 <button class="install">Install</button>
@@ -105,7 +113,7 @@ function renderPackageList(packages, searchTerm) {
         });
 
         moreInfoButton.addEventListener('click', () => {
-            openPackageInfo(pkg);
+            openPackageInfo(pkg.url);
         });
     });
 }
@@ -147,8 +155,12 @@ async function installPackage(packageName) {
     overlay.classList.remove('show');
 }
 
-function openPackageInfo(pkg) {
-    alert(`More info about ${pkg.title}...`);
+function openPackageInfo(url) {
+    if (url) {
+        window.open(url, '_blank'); // Opens the URL in a new browser tab
+    } else {
+        alert('No information available for this package.');
+    }
 }
 
 function updateResultsCount(count, searchTerm) {

@@ -43,7 +43,7 @@ ipcMain.handle('get-packages', async () => {
 });
 
 ipcMain.handle('install-package', async (event, packageName) => {
-  const packageManager = new PackageManager();
+  const packageManager = new upyPackage.PackageManager();
   try {
       await packageManager.installPackage(packageName);
       return { success: true };
