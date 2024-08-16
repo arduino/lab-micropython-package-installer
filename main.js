@@ -4,6 +4,7 @@ const path = require('path');
 
 let mainWindow;
 let upyPackage;
+const ARDUINO_VID = '0x2341';
 
 app.on('ready', async() => {
   // Load the PackageManager class from the upy-package module
@@ -44,8 +45,12 @@ ipcMain.handle('get-packages', async () => {
 
 ipcMain.handle('install-package', async (event, packageName) => {
   const packageManager = new upyPackage.PackageManager();
+  const boardManager = new upyPackage.BoardManager();  
+
   try {
-      await packageManager.installPackage(packageName);
+      const selectedBoard = await boardManager.getBoard(ARDUINO_VID);
+      const package = await packageManager.getPackage(packageName);
+      await packageManager.installPackage(package, selectedBoard);
       return { success: true };
   } catch (error) {
       console.error(`Failed to install package ${packageName}:`, error);
