@@ -13,11 +13,36 @@ body {
     padding: 20px 0;
 }
 
+/* Overlay for disabling the search results during installation */
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3); /* Gray translucent background */
+    z-index: 999; /* Ensures it appears above other content */
+    display: none; /* Hidden by default */
+    cursor: not-allowed;
+}
+
+#overlay.show {
+    display: block; /* Show overlay when the installation starts */
+}
+
 .lower-section {
+    position: relative; /* So the overlay can be positioned absolutely within it */
     background-color: #F9F9F9; /* Light gray background for the lower section */
     flex-grow: 1; /* Allows this section to fill remaining space */
     overflow-y: auto; /* Enable vertical scrolling */
     padding-top: 20px;
+}
+
+/* Disabling buttons appearance */
+.lower-section button:disabled {
+    background-color: #ccc; /* Disabled state background */
+    color: #666; /* Disabled state text color */
+    cursor: not-allowed;
 }
 
 .main-container {

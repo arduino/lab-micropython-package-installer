@@ -65,11 +65,21 @@ function renderPackageList(packages, searchTerm) {
 
 function installPackage(pkg) {
     const statusField = document.getElementById('status');
+    const overlay = document.getElementById('overlay');
+    const installButtons = document.querySelectorAll('.install');
+
+    // Disable all install buttons and show overlay
+    installButtons.forEach(button => button.disabled = true);
+    overlay.classList.add('show');
     statusField.textContent = `Installing ${pkg.title}...`;
 
     setTimeout(() => {
         statusField.textContent = `${pkg.title} installation complete.`;
-    }, 2000);
+
+        // Re-enable all install buttons and hide overlay
+        installButtons.forEach(button => button.disabled = false);
+        overlay.classList.remove('show');
+    }, 2000); // Simulate installation time
 }
 
 function openPackageInfo(pkg) {
@@ -122,16 +132,19 @@ function toggleAdvancedOptions() {
 function manualInstall() {
     const githubUrl = document.getElementById('github-url').value;
     const statusField = document.getElementById('status');
+    const overlay = document.getElementById('overlay');
 
     if (githubUrl.trim() === '') {
         alert('Please enter a valid GitHub URL.');
         return;
     }
 
+    overlay.classList.add('show');
     statusField.textContent = `Installing from ${githubUrl}...`;
 
     // Simulate installation process
     setTimeout(() => {
         statusField.textContent = `Installation from ${githubUrl} complete.`;
+        overlay.classList.remove('show');
     }, 2000);
 }
