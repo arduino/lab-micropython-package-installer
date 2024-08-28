@@ -268,7 +268,7 @@ function hideStatus() {
     // After the transition ends, hide the element
     setTimeout(() => {
         statusBar.style.display = 'none';
-    }, 300); // Match this duration with the CSS transition duration
+    }, 500); // Match this duration with the CSS transition duration
 }
 
 function showOverlay() {
