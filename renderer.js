@@ -134,7 +134,7 @@ async function installPackage(packageName) {
     githubUrlInput.disabled = true;
     manualInstallButton.disabled = true;
     boardItems.forEach(board => board.style.pointerEvents = 'none');
-    overlay.classList.add('show');
+    showOverlay();
 
     showStatus(`Installing ${packageName} on ${selectedBoard}...`);
 
@@ -151,7 +151,7 @@ async function installPackage(packageName) {
     githubUrlInput.disabled = false;
     boardItems.forEach(board => board.style.pointerEvents = 'auto');
     updateInstallButtonsState(); // Re-enable buttons only if a board is selected
-    overlay.classList.remove('show');
+    hideOverlay();
 }
 
 function openPackageInfo(url) {
@@ -209,7 +209,6 @@ function manualInstall() {
     if (!selectedBoard) return; // Safety check
 
     const githubUrl = document.getElementById('github-url').value;
-    const overlay = document.getElementById('overlay');
     const searchField = document.getElementById('search-field');
     const githubUrlInput = document.getElementById('github-url');
     const manualInstallButton = document.getElementById('manual-install-btn');
@@ -221,7 +220,7 @@ function manualInstall() {
     }
 
     // Disable the same components during manual installation
-    overlay.classList.add('show');
+    showOverlay();
     searchField.disabled = true;
     githubUrlInput.disabled = true;
     manualInstallButton.disabled = true;
@@ -234,7 +233,7 @@ function manualInstall() {
         showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`);
 
         // Re-enable all components
-        overlay.classList.remove('show');
+        hideOverlay();
         searchField.disabled = false;
         githubUrlInput.disabled = false;
         boardItems.forEach(board => board.style.pointerEvents = 'auto');
@@ -272,4 +271,25 @@ function hideStatus() {
     }, 300); // Match this duration with the CSS transition duration
 }
 
+function showOverlay() {
+    const overlay = document.getElementById('overlay');
+    
+    // Display the overlay and then trigger the fade-in effect
+    overlay.style.display = 'block';
+    
+    setTimeout(() => {
+        overlay.classList.add('visible');
+    }, 10);
+}
+
+function hideOverlay() {
+    const overlay = document.getElementById('overlay');
+    
+    // Trigger the fade-out effect
+    overlay.classList.remove('visible');
+    
+    // After the fade-out transition ends, hide the element
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 500); // Match this duration with the CSS transition duration
 }
