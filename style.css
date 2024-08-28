@@ -103,16 +103,14 @@ body {
     color: white;
     padding: 0 10px; /* Set initial padding to 0 for smooth slide */
     margin-top: 10px;
-    border-radius: 4px;
     text-align: center;
-    overflow: hidden;
-    max-height: 0;
+    height: 0;
     opacity: 0;
     transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s ease;
 }
 
 .status-bar.visible {
-    max-height: 100px; /* Adjust based on expected content height */
+    height: auto;
     padding: 10px;
     opacity: 1;
 }
