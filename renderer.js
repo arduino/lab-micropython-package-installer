@@ -94,8 +94,8 @@ function renderPackageList(packages, searchTerm) {
                 ${licenseHTML}
             </div>
             <div class="package-buttons">
-                <button class="install">Install</button>
-                <button class="read-more">More info</button>
+                <button class="install primary">Install</button>
+                <button class="read-more link">More info</button>
             </div>
         `;
 
@@ -142,7 +142,7 @@ async function installPackage(packageName) {
     const result = await window.api.installPackage(packageName);
 
     if (result.success) {
-        statusField.textContent = `${packageName} installation complete on ${selectedBoard}.`;
+        statusField.textContent = `${packageName} installation complete on ${selectedBoard}. ✅`;
     } else {
         statusField.textContent = `Failed to install ${packageName}: ${result.error}`;
     }

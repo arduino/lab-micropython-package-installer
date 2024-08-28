@@ -4,3 +4,20 @@
     --main-flexbox-gap: 16px;
     --secondary-text-color: #87898b;
 }
+
+button.link {
+    color: var(--main-control-color) !important;
+    text-decoration: none;
+    font-weight: 600;
+    outline: none;
+    background: none !important;
+    font-size: 1rem;
+}
+
+button.link:hover {
+    color: var(--main-control-color-hover);
+}
+
+h1 {
+    text-align: center;
+}

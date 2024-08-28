@@ -10,6 +10,10 @@ app.on('ready', async() => {
   // Load the PackageManager class from the upy-package module
   upyPackage = await import('upy-package');
   mainWindow = new BrowserWindow({
+      width: 800,
+      height: 800,
+      minWidth: 600,
+      minHeight: 600,
       webPreferences: {
           preload: path.join(__dirname, 'preload.js'), // Preload script for contextBridge
           nodeIntegration: false,
