@@ -196,11 +196,11 @@ function toggleAdvancedOptions() {
     const advancedOptions = document.getElementById('advanced-options');
     const disclosureIcon = document.getElementById('disclosure-icon');
     
-    if (advancedOptions.style.display === 'none') {
-        advancedOptions.style.display = 'block';
+    if (!advancedOptions.classList.contains('visible')) {
+        advancedOptions.classList.add('visible');
         disclosureIcon.innerHTML = '&#9662;'; // Downward-pointing triangle (▼)
     } else {
-        advancedOptions.style.display = 'none';
+        advancedOptions.classList.remove('visible');
         disclosureIcon.innerHTML = '&#9656;'; // Right-pointing triangle (▶)
     }
 }

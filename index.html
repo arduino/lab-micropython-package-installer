@@ -6,7 +6,7 @@
     <title>MicroPython Package Installer</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/buttons.css">
 </head>
 <body>
@@ -35,8 +35,8 @@
                 <div id="search">
                     <span id="search-icon">
                         <!-- Magnifying glass SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zm-5.44.681a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.4658 14.5783L11.0908 10.2033C12.1049 8.96159 12.6031 7.37764 12.4822 5.77899C12.3614 4.18033 11.6309 2.68924 10.4417 1.61402C9.25248 0.538793 7.69557 -0.0383303 6.09286 0.00197775C4.49016 0.0422858 2.96423 0.696942 1.83058 1.83058C0.696942 2.96423 0.0422858 4.49016 0.00197775 6.09286C-0.0383303 7.69557 0.538793 9.25248 1.61402 10.4417C2.68924 11.6309 4.18033 12.3614 5.77899 12.4822C7.37764 12.6031 8.96159 12.1049 10.2033 11.0908L14.5783 15.4658C14.6364 15.5244 14.7056 15.5709 14.7817 15.6026C14.8579 15.6344 14.9396 15.6507 15.0221 15.6507C15.1046 15.6507 15.1863 15.6344 15.2624 15.6026C15.3386 15.5709 15.4077 15.5244 15.4658 15.4658C15.5244 15.4077 15.5709 15.3386 15.6026 15.2624C15.6344 15.1863 15.6507 15.1046 15.6507 15.0221C15.6507 14.9396 15.6344 14.8579 15.6026 14.7817C15.5709 14.7056 15.5244 14.6364 15.4658 14.5783V14.5783ZM6.27208 11.2721C5.28318 11.2721 4.31648 10.9788 3.49423 10.4294C2.67199 9.88003 2.03113 9.09913 1.65269 8.1855C1.27425 7.27187 1.17523 6.26654 1.36816 5.29663C1.56108 4.32673 2.03729 3.43581 2.73655 2.73655C3.43581 2.03729 4.32673 1.56108 5.29663 1.36816C6.26654 1.17523 7.27187 1.27425 8.1855 1.65269C9.09913 2.03113 9.88003 2.67199 10.4294 3.49423C10.9788 4.31648 11.2721 5.28318 11.2721 6.27208C11.2721 7.59817 10.7453 8.86994 9.80762 9.80762C8.86994 10.7453 7.59817 11.2721 6.27208 11.2721V11.2721Z" fill="#434F54"/>
                         </svg>
                     </span>
                     <input id="search-field" type="search" placeholder="Search package..." oninput="performSearch()">
@@ -48,8 +48,7 @@
                 <span id="disclosure-icon">&#9656;</span> <!-- Right-pointing triangle -->
                 Advanced Options
             </div>
-            <div id="advanced-options" class="advanced-options" style="display: none;">
-                <label for="github-url">GitHub URL:</label>
+            <div id="advanced-options" class="advanced-options">
                 <input type="text" id="github-url" placeholder="Enter GitHub URL for package">
                 <button id="manual-install-btn" class="primary" onclick="manualInstall()">Install</button>
             </div>

@@ -45,3 +45,22 @@ button.secondary {
 button.secondary:hover {
     background-color: rgba(0, 92, 95, .2);
 }
+
+button.link {
+    color: var(--main-control-color) !important;
+    text-decoration: none;
+    font-weight: 600;
+    outline: none;
+    background: none !important;
+    font-size: 1rem;
+}
+
+button.link:hover {
+    color: var(--main-control-color-hover);
+}
+
+/* Style for disabled buttons */
+button.primary:hover:disabled {
+    background-color: var(--disabled-button-background);
+    color: var(--secondary-text-color);
+}

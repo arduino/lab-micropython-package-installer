@@ -3,21 +3,27 @@
     --main-control-color-hover: #005c5f;
     --main-flexbox-gap: 16px;
     --secondary-text-color: #87898b;
+    --disabled-button-background: #e0e0e0;
 }
 
-button.link {
-    color: var(--main-control-color) !important;
-    text-decoration: none;
-    font-weight: 600;
-    outline: none;
-    background: none !important;
-    font-size: 1rem;
-}
-
-button.link:hover {
-    color: var(--main-control-color-hover);
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
     text-align: center;
+}
+
+/* Input field styling */
+input[type="text"], input[type="search"] {
+    font-family: 'Open Sans', sans-serif;   
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
