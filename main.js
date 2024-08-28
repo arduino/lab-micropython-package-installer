@@ -47,17 +47,24 @@ ipcMain.handle('get-packages', async () => {
   }
 });
 
-ipcMain.handle('install-package', async (event, packageName) => {
+ipcMain.handle('install-package', async (event, aPackage) => {
   const packageManager = new upyPackage.PackageManager();
   const boardManager = new upyPackage.BoardManager();  
 
   try {
       const selectedBoard = await boardManager.getBoard(ARDUINO_VID);
-      const package = await packageManager.getPackage(packageName);
-      await packageManager.installPackage(package, selectedBoard);
+      if(!aPackage.name && aPackage.url) {
+        await packageManager.installPackageFromGithubURL(aPackage.url, selectedBoard);
+      } else {
+        // Consider getting the package by name from the package manager
+        // in case there is not the full package info available in the frontend:
+        // const package = await packageManager.getPackage(aPackage.name);
+        await packageManager.installPackage(aPackage, selectedBoard);
+      }
       return { success: true };
   } catch (error) {
-      console.error(`Failed to install package ${packageName}:`, error);
+      let packageDesignator = aPackage.name || aPackage.url;
+      console.error(`Failed to install package ${packageDesignator}:`, error);
       return { success: false, error: error.message };
   }
 });

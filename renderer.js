@@ -66,6 +66,7 @@ function performSearch() {
 
     renderPackageList(filteredPackages, searchTerm);
     updateResultsCount(filteredPackages.length, searchTerm);
+    updateInstallButtonsState(); // Disable buttons if no board is selected
 }
 
 function renderPackageList(packages, searchTerm) {
@@ -109,7 +110,7 @@ function renderPackageList(packages, searchTerm) {
         const moreInfoButton = packageItem.querySelector('.read-more');
 
         installButton.addEventListener('click', () => {
-            installPackage(pkg.name);
+            installPackage(pkg);
         });
 
         moreInfoButton.addEventListener('click', () => {
@@ -137,19 +138,20 @@ function toggleUserInteraction(enabled) {
     }
 }
 
-async function installPackage(packageName) {
+async function installPackage(package) {
     if (!selectedBoard) return;
 
+    const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`Installing ${packageName} on ${selectedBoard}...`);
-
-    const result = await window.api.installPackage(packageName);
+    showStatus(`Installing ${packageDesignator} on ${selectedBoard}...`);
+    
+    const result = await window.api.installPackage(package);
 
     if (result.success) {
-        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`);
+        showStatus(`${packageDesignator} installation complete on ${selectedBoard}. ✅`);
     } else {
-        showStatus(`Failed to install ${packageName}: ${result.error} ❌`);
+        showStatus(`Failed to install ${packageDesignator}: ${result.error} ❌`);
     }
 
     toggleUserInteraction(true);
@@ -207,42 +209,15 @@ function toggleAdvancedOptions() {
     }
 }
 
-function manualInstall() {
-    if (!selectedBoard) return; // Safety check
-
+async function manualInstall() {
     const githubUrl = document.getElementById('github-url').value;
-    const searchField = document.getElementById('search-field');
-    const githubUrlInput = document.getElementById('github-url');
-    const manualInstallButton = document.getElementById('manual-install-btn');
-    const boardItems = document.querySelectorAll('.board-item');
 
     if (githubUrl.trim() === '') {
         alert('Please enter a valid GitHub URL.');
         return;
     }
 
-    // Disable the same components during manual installation
-    showOverlay();
-    searchField.disabled = true;
-    githubUrlInput.disabled = true;
-    manualInstallButton.disabled = true;
-    boardItems.forEach(board => board.style.pointerEvents = 'none');
-
-    showStatus(`Installing from ${githubUrl} on ${selectedBoard}...`);
-
-    // Simulate installation process
-    setTimeout(() => {
-        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`);
-
-        // Re-enable all components
-        hideOverlay();
-        searchField.disabled = false;
-        githubUrlInput.disabled = false;
-        boardItems.forEach(board => board.style.pointerEvents = 'auto');
-
-        // Only enable install buttons if a board is still selected
-        updateInstallButtonsState();
-    }, 2000);
+    await installPackage({ url: githubUrl });
 }
 
 function showStatus(message, duration = null) {
