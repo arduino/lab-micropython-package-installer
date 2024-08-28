@@ -79,7 +79,7 @@ function renderPackageList(packages, searchTerm) {
         const packageItem = document.createElement('li');
         packageItem.className = 'package-item';
 
-        let authorHTML = pkg.author ? ` by ${pkg.author}` : '';
+        let authorHTML = pkg.author ? `by ${pkg.author}` : '';
         let descriptionHTML = pkg.description ? `<div class="package-description">${pkg.description}</div>` : '';
         let tagsHTML = pkg.tags && pkg.tags.length ? `<div class="package-tags">${pkg.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : '';
         let licenseHTML = pkg.license ? `<div class="package-license">Licensed under ${pkg.license}</div>` : '';
@@ -87,7 +87,7 @@ function renderPackageList(packages, searchTerm) {
         packageItem.innerHTML = `
             <div class="package-info">
                 <div class="package-title-container">
-                    <div class="package-title">${pkg.name}${authorHTML}</div>
+                    <div class="package-title">📦 ${pkg.name} <span class="author">${authorHTML}</span></div>
                     ${isExactMatch ? `<span class="exact-match-tag">Exact Match</span>` : ''}
                 </div>
                 ${descriptionHTML}
@@ -131,7 +131,7 @@ function toggleUserInteraction(enabled) {
     searchField.disabled = !enabled;
     githubUrlInput.disabled = !enabled;
     manualInstallButton.disabled = !enabled;
-    boardItems.forEach(board => board.style.pointerEvents = 'none');
+    boardItems.forEach(board => board.style.pointerEvents = enabled ? 'auto' : 'none');
 
     if(enabled){
         updateInstallButtonsState(); // Re-enable buttons only if a board is selected
@@ -144,14 +144,14 @@ async function installPackage(package) {
     const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`Installing ${packageDesignator} on ${selectedBoard}...`);
+    showStatus(`⌛️ Installing ${packageDesignator} on ${selectedBoard}...`);
     
     const result = await window.api.installPackage(package);
 
     if (result.success) {
-        showStatus(`${packageDesignator} installation complete on ${selectedBoard}. ✅`);
+        showStatus(`✅ ${packageDesignator} installation complete on ${selectedBoard}.`);
     } else {
-        showStatus(`Failed to install ${packageDesignator}: ${result.error} ❌`);
+        showStatus(`❌ Failed to install ${packageDesignator}: ${result.error}`);
     }
 
     toggleUserInteraction(true);

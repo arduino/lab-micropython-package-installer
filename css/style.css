@@ -146,7 +146,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Removed border and background color */
+    gap: 20px;
 }
 
 .package-divider {
@@ -168,6 +168,12 @@
     font-weight: 600;
 }
 
+.package-title .author {
+    color: #7F8C8D;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
 .exact-match-tag {
     padding: 2px 6px;
     background-color: #ffd700;
@@ -180,25 +186,29 @@
 .package-description {
     margin-top: 5px;
     font-size: 0.9em;
+    line-height: 1.5;
+    color: #4E5B61;
 }
 
 .package-tags {
-    margin-top: 5px;
+    margin-top: 12px;
     display: flex;
     gap: 5px;
 }
 
 .tag {
     padding: 2px 6px;
-    background-color: #e0e0e0;
+    background-color: #ECF1F1;
     border-radius: 4px;
+    border: 1px solid #C9D2D2;
     font-size: 0.8em;
 }
 
 .package-license {
-    margin-top: 5px;
+    margin-top: 12px;
     font-size: 0.8em;
     font-family: 'Roboto Mono', monospace;
+    color: #4E5B61;
 }
 
 .package-buttons {
