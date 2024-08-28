@@ -1,5 +1,4 @@
 let cachedPackages = []; // Global variable to cache packages
-const defaultStatusMessageDuration = 5000; // Duration in milliseconds
 
 // Fetch package list once on app load and cache it
 document.addEventListener('DOMContentLoaded', async () => {
@@ -142,9 +141,9 @@ async function installPackage(packageName) {
     const result = await window.api.installPackage(packageName);
 
     if (result.success) {
-        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`, defaultStatusMessageDuration);
+        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`);
     } else {
-        showStatus(`Failed to install ${packageName}: ${result.error}`, defaultStatusMessageDuration);
+        showStatus(`Failed to install ${packageName}: ${result.error} ❌`);
     }
 
     // Re-enable UI components
@@ -231,7 +230,7 @@ function manualInstall() {
 
     // Simulate installation process
     setTimeout(() => {
-        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`, defaultStatusMessageDuration);
+        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`);
 
         // Re-enable all components
         hideOverlay();
