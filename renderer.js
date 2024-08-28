@@ -118,10 +118,7 @@ function renderPackageList(packages, searchTerm) {
     });
 }
 
-async function installPackage(packageName) {
-    if (!selectedBoard) return;
-
-    const overlay = document.getElementById('overlay');
+function toggleUserInteraction(enabled) {
     const installButtons = document.querySelectorAll('.install');
     const searchField = document.getElementById('search-field');
     const githubUrlInput = document.getElementById('github-url');
@@ -129,13 +126,22 @@ async function installPackage(packageName) {
     const boardItems = document.querySelectorAll('.board-item');
 
     // Disable UI components
-    installButtons.forEach(button => button.disabled = true);
-    searchField.disabled = true;
-    githubUrlInput.disabled = true;
-    manualInstallButton.disabled = true;
+    installButtons.forEach(button => button.disabled = !enabled);
+    searchField.disabled = !enabled;
+    githubUrlInput.disabled = !enabled;
+    manualInstallButton.disabled = !enabled;
     boardItems.forEach(board => board.style.pointerEvents = 'none');
-    showOverlay();
 
+    if(enabled){
+        updateInstallButtonsState(); // Re-enable buttons only if a board is selected
+    }
+}
+
+async function installPackage(packageName) {
+    if (!selectedBoard) return;
+
+    toggleUserInteraction(false);
+    showOverlay();
     showStatus(`Installing ${packageName} on ${selectedBoard}...`);
 
     const result = await window.api.installPackage(packageName);
@@ -146,11 +152,7 @@ async function installPackage(packageName) {
         showStatus(`Failed to install ${packageName}: ${result.error} ❌`);
     }
 
-    // Re-enable UI components
-    searchField.disabled = false;
-    githubUrlInput.disabled = false;
-    boardItems.forEach(board => board.style.pointerEvents = 'auto');
-    updateInstallButtonsState(); // Re-enable buttons only if a board is selected
+    toggleUserInteraction(true);
     hideOverlay();
 }
 
