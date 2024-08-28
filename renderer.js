@@ -121,7 +121,6 @@ function renderPackageList(packages, searchTerm) {
 async function installPackage(packageName) {
     if (!selectedBoard) return;
 
-    const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
     const installButtons = document.querySelectorAll('.install');
     const searchField = document.getElementById('search-field');
@@ -137,14 +136,14 @@ async function installPackage(packageName) {
     boardItems.forEach(board => board.style.pointerEvents = 'none');
     overlay.classList.add('show');
 
-    statusField.textContent = `Installing ${packageName} on ${selectedBoard}...`;
+    showStatus(`Installing ${packageName} on ${selectedBoard}...`);
 
     const result = await window.api.installPackage(packageName);
 
     if (result.success) {
-        statusField.textContent = `${packageName} installation complete on ${selectedBoard}. ✅`;
+        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`);
     } else {
-        statusField.textContent = `Failed to install ${packageName}: ${result.error}`;
+        showStatus(`Failed to install ${packageName}: ${result.error}`);
     }
 
     // Re-enable UI components
@@ -210,7 +209,6 @@ function manualInstall() {
     if (!selectedBoard) return; // Safety check
 
     const githubUrl = document.getElementById('github-url').value;
-    const statusField = document.getElementById('status');
     const overlay = document.getElementById('overlay');
     const searchField = document.getElementById('search-field');
     const githubUrlInput = document.getElementById('github-url');
@@ -229,11 +227,11 @@ function manualInstall() {
     manualInstallButton.disabled = true;
     boardItems.forEach(board => board.style.pointerEvents = 'none');
 
-    statusField.textContent = `Installing from ${githubUrl} on ${selectedBoard}...`;
+    showStatus(`Installing from ${githubUrl} on ${selectedBoard}...`);
 
     // Simulate installation process
     setTimeout(() => {
-        statusField.textContent = `Installation from ${githubUrl} complete on ${selectedBoard}.`;
+        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`);
 
         // Re-enable all components
         overlay.classList.remove('show');
@@ -244,4 +242,34 @@ function manualInstall() {
         // Only enable install buttons if a board is still selected
         updateInstallButtonsState();
     }, 2000);
+}
+
+function showStatus(message) {
+    const statusBar = document.getElementById('status-bar');
+    const statusMessage = document.getElementById('status-message');
+
+    statusMessage.textContent = message;
+    statusBar.style.display = 'block';
+
+    // Add the visible class to trigger the slide down effect
+    setTimeout(() => {
+        statusBar.classList.add('visible');
+    }, 10);
+
+    // Automatically hide the status after 3 seconds
+    setTimeout(hideStatus, 3000);
+}
+
+function hideStatus() {
+    const statusBar = document.getElementById('status-bar');
+
+    // Remove the visible class to trigger the slide-up effect
+    statusBar.classList.remove('visible');
+
+    // After the transition ends, hide the element
+    setTimeout(() => {
+        statusBar.style.display = 'none';
+    }, 300); // Match this duration with the CSS transition duration
+}
+
 }

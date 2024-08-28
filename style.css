@@ -84,9 +84,25 @@ body {
     background-color: #e0e0e0;
 }
 
-#status {
-    margin-bottom: 10px;
+/* Status Bar */
+.status-bar {
+    background-color: #007bff;
+    color: white;
+    padding: 0 10px; /* Set initial padding to 0 for smooth slide */
+    margin-top: 10px;
+    border-radius: 8px;
     font-weight: bold;
+    text-align: center;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+}
+
+.status-bar.visible {
+    max-height: 100px; /* Adjust based on expected content height */
+    padding: 10px;
+    opacity: 1;
 }
 
 #search {

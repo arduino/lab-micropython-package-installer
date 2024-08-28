@@ -27,9 +27,6 @@
                 <div class="board-item">Nano 33 BLE</div>
             </div>
 
-            <!-- Status -->
-            <div id="status">Ready</div>
-
             <!-- Packages Title -->
             <div class="section-title">Packages</div>
 
@@ -55,6 +52,11 @@
                 <label for="github-url">GitHub URL:</label>
                 <input type="text" id="github-url" placeholder="Enter GitHub URL for package">
                 <button id="manual-install-btn" class="primary" onclick="manualInstall()">Install</button>
+            </div>
+
+            <!-- Status Bar -->
+            <div id="status-bar" class="status-bar" style="display: none;">
+                <span id="status-message"></span>
             </div>
         </div>
     </div>
