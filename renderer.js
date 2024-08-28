@@ -149,9 +149,9 @@ async function installPackage(package) {
     const result = await window.api.installPackage(package);
 
     if (result.success) {
-        showStatus(`✅ ${packageDesignator} installation complete on ${selectedBoard}.`);
+        showStatus(`✅ '${packageDesignator}' installation complete on ${selectedBoard}.`);
     } else {
-        showStatus(`❌ Failed to install ${packageDesignator}: ${result.error}`);
+        showStatus(`❌ Failed to install '${packageDesignator}': ${result.error}`);
     }
 
     toggleUserInteraction(true);
