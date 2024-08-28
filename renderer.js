@@ -1,4 +1,5 @@
 let cachedPackages = []; // Global variable to cache packages
+const defaultStatusMessageDuration = 5000; // Duration in milliseconds
 
 // Fetch package list once on app load and cache it
 document.addEventListener('DOMContentLoaded', async () => {
@@ -141,9 +142,9 @@ async function installPackage(packageName) {
     const result = await window.api.installPackage(packageName);
 
     if (result.success) {
-        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`);
+        showStatus(`${packageName} installation complete on ${selectedBoard}. ✅`, defaultStatusMessageDuration);
     } else {
-        showStatus(`Failed to install ${packageName}: ${result.error}`);
+        showStatus(`Failed to install ${packageName}: ${result.error}`, defaultStatusMessageDuration);
     }
 
     // Re-enable UI components
@@ -230,7 +231,7 @@ function manualInstall() {
 
     // Simulate installation process
     setTimeout(() => {
-        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`);
+        showStatus(`Installation from ${githubUrl} complete on ${selectedBoard}.`, defaultStatusMessageDuration);
 
         // Re-enable all components
         hideOverlay();
@@ -243,7 +244,7 @@ function manualInstall() {
     }, 2000);
 }
 
-function showStatus(message) {
+function showStatus(message, duration = null) {
     const statusBar = document.getElementById('status-bar');
     const statusMessage = document.getElementById('status-message');
 
@@ -255,8 +256,10 @@ function showStatus(message) {
         statusBar.classList.add('visible');
     }, 10);
 
-    // Automatically hide the status after 3 seconds
-    setTimeout(hideStatus, 3000);
+    if (duration) {
+        // Automatically hide the status after given duration
+        setTimeout(hideStatus, duration);
+    }
 }
 
 function hideStatus() {
