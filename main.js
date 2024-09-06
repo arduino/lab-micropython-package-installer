@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 // const { PackageManager } = require('upy-package');  // Import the PackageManager class
 
@@ -22,6 +22,9 @@ app.on('ready', async() => {
   });
 
   mainWindow.loadFile('index.html');
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+  });
 });
 
 app.on('window-all-closed', () => {
