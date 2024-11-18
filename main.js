@@ -4,7 +4,7 @@ const path = require('path');
 
 let mainWindow;
 let upyPackage;
-const ARDUINO_VID = '0x2341';
+const ARDUINO_VID = 0x2341;
 
 app.on('ready', async() => {
   // Load the PackageManager class from the upy-package module
@@ -50,14 +50,25 @@ ipcMain.handle('get-packages', async () => {
   }
 });
 
+ipcMain.handle('get-boards', async () => {
+  const boardManager = new upyPackage.DeviceManager();
+  try {
+      return await boardManager.getConnectedDevices(ARDUINO_VID);
+  } catch (error) {
+      console.error('Failed to fetch boards:', error);
+      return [];
+  }
+});
+
 ipcMain.handle('install-package', async (event, aPackage) => {
   const packageManager = new upyPackage.PackageManager();
-  const boardManager = new upyPackage.BoardManager();  
+  const boardManager = new upyPackage.DeviceManager();  
 
   try {
-      const selectedBoard = await boardManager.getBoard(ARDUINO_VID);
+      // TODO select the board from the frontend
+      const selectedBoard = (await boardManager.getConnectedDevices(ARDUINO_VID))[0];
       if(!aPackage.name && aPackage.url) {
-        await packageManager.installPackageFromGithubURL(aPackage.url, selectedBoard);
+        await packageManager.installPackageFromURL(aPackage.url, selectedBoard);
       } else {
         // Consider getting the package by name from the package manager
         // in case there is not the full package info available in the frontend:

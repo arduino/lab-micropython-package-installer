@@ -1,7 +1,9 @@
 let cachedPackages = []; // Global variable to cache packages
+let selectedDeviceItem = null;  // Variable to keep track of the selected board
+const deviceSelectionList = document.querySelector(".item-selection-list");
+const reloadDeviceListLink = document.getElementById("reload-link");
 
-// Fetch package list once on app load and cache it
-document.addEventListener('DOMContentLoaded', async () => {
+async function fetchPackages(){
     const packageList = document.getElementById('package-list');
 
     // Show loading spinner
@@ -11,47 +13,126 @@ document.addEventListener('DOMContentLoaded', async () => {
         const packages = await window.api.getPackages();
         cachedPackages = packages;
         renderPackageList(cachedPackages, ''); // Render the fetched packages
-        performSearch(); // Initial render with all packages
-        setupBoardSelection();
+        performSearch(); // Initial render with all packages                
     } catch (error) {
         console.error('Error fetching packages:', error);
         document.getElementById('package-list').innerHTML = '<p>Error loading packages.</p>';
     }
-});
-
-let selectedBoard = null;  // Variable to keep track of the selected board
-
-
-function setupBoardSelection() {
-    const boardItems = document.querySelectorAll('.board-item');
-
-    boardItems.forEach(board => {
-        board.addEventListener('click', () => {
-            // Unselect all boards
-            boardItems.forEach(b => b.classList.remove('selected'));
-
-            // Mark the clicked board as selected
-            board.classList.add('selected');
-            selectedBoard = board.textContent;
-
-            // Enable the install buttons if a board is selected
-            updateInstallButtonsState();
-        });
-    });
-
-    // Disable the install buttons if no board is selected on page load
-    updateInstallButtonsState();
 }
 
-function updateInstallButtonsState() {
+async function reloadDeviceList() {
+    setInstallButtonsEnabled(false); // Disable until a board is selected
+    const boards = await window.api.getBoards();
+    displayDevices(boards, deviceSelectionList);
+}
+
+// Fetch package list once on app load and cache it
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchPackages();
+    
+    deviceSelectionList.addEventListener("device-selected", (event) => {
+        const selectedDevice = event.target;
+        console.log("Selected device:", selectedDevice);
+        // Enable the install buttons if a board is selected
+        setInstallButtonsEnabled(true);
+    });
+
+    reloadDeviceListLink.addEventListener('click', async () => {
+        await reloadDeviceList();
+    });
+    await reloadDeviceList(); // Initial load of the device list
+});
+
+function selectDevice(deviceItem) {
+    const container = deviceItem.parentElement;
+    const previousSelectedElement = container.querySelector(".selected");
+
+    if (previousSelectedElement !== null) {
+        previousSelectedElement.classList.remove("selected");
+    }
+
+    deviceItem.classList.add("selected");
+    deviceItem.dispatchEvent(new Event("device-selected", { bubbles: true }));
+}
+
+function createDeviceSelectorItem(device) {
+    const fullDeviceName = device.manufacturer + " " + device.name;
+    const deviceItem = document.createElement("button");
+    deviceItem.classList.add("selection-item");
+
+    // Populate the device item with data attributes so that we can easily access them later
+    // when the user selects a device and we need to flash the firmware
+    deviceItem.setAttribute("data-vid", device.vendorID);
+    deviceItem.setAttribute("data-pid", device.productID);
+    deviceItem.setAttribute("data-port", device.serialPort);
+    deviceItem.addEventListener("click", () => {
+        selectDevice(deviceItem);
+    });
+
+    const deviceImage = document.createElement("img");
+    deviceImage.setAttribute("src", "./assets/boards/" + fullDeviceName + ".svg");
+    deviceItem.appendChild(deviceImage);
+
+    const deviceLabel = document.createElement("span");
+    deviceLabel.classList.add("selection-item-label");
+    deviceLabel.textContent = device.name;
+    deviceItem.appendChild(deviceLabel);
+
+    return deviceItem;
+}
+
+function displayDevices(deviceList, container) {
+
+    selectedDeviceItem = null;
+
+    // Sort the device list by manufacturer name and device name
+    deviceList.sort((deviceA, deviceB) => {
+        const deviceAName = deviceA.manufacturer + deviceA.name;
+        const deviceBName = deviceB.manufacturer + deviceB.name;
+        return deviceAName.localeCompare(deviceBName);
+    });
+
+    // Clear the device list
+    container.innerHTML = "";
+
+    if(deviceList.length === 0) {
+        container.innerHTML = '<p>No devices found. Please connect a device and click reload.</p>';
+        return;
+    }
+
+    // TODO: Uncomment when implementing auto-reload on start
+    // reloadLinkContainer.style.display = deviceList.length > 0 ? 'block' : 'none';
+
+    for (const device of deviceList) {
+        container.appendChild(createDeviceSelectorItem(device));
+    }
+
+    // If there is only one device, select it
+    if (deviceList.length == 1) {
+        selectDevice(container.firstElementChild);
+    }
+}
+
+// TODO
+function getSelectedDeviceData(container) {
+    const selectedElement = container.querySelector(".selected");
+    
+    if(!selectedElement) {
+      return null;
+    }
+  
+    return {
+      vendorID: parseInt(selectedElement.dataset.vid),
+      productID: parseInt(selectedElement.dataset.pid)
+    };
+  }
+
+function setInstallButtonsEnabled(enabled) {
     const installButtons = document.querySelectorAll('.install');
     const manualInstallButton = document.getElementById('manual-install-btn');
 
-    // Disable or enable buttons based on board selection
-    const buttonsDisabled = !selectedBoard;
-
-    installButtons.forEach(button => button.disabled = buttonsDisabled);
-    manualInstallButton.disabled = buttonsDisabled;
+    installButtons.forEach(button => button.disabled = !enabled);
+    manualInstallButton.disabled = !enabled;
 }
 
 function performSearch() {
@@ -66,7 +147,7 @@ function performSearch() {
 
     renderPackageList(filteredPackages, searchTerm);
     updateResultsCount(filteredPackages.length, searchTerm);
-    updateInstallButtonsState(); // Disable buttons if no board is selected
+    setInstallButtonsEnabled(selectedDeviceItem == null); // Disable buttons if no board is selected
 }
 
 function renderPackageList(packages, searchTerm) {
@@ -124,7 +205,7 @@ function toggleUserInteraction(enabled) {
     const searchField = document.getElementById('search-field');
     const githubUrlInput = document.getElementById('github-url');
     const manualInstallButton = document.getElementById('manual-install-btn');
-    const boardItems = document.querySelectorAll('.board-item');
+    const boardItems = document.querySelectorAll('.selection-item');
 
     // Disable UI components
     installButtons.forEach(button => button.disabled = !enabled);
@@ -134,22 +215,22 @@ function toggleUserInteraction(enabled) {
     boardItems.forEach(board => board.style.pointerEvents = enabled ? 'auto' : 'none');
 
     if(enabled){
-        updateInstallButtonsState(); // Re-enable buttons only if a board is selected
+        setInstallButtonsEnabled(); // Re-enable buttons only if a board is selected
     }
 }
 
 async function installPackage(package) {
-    if (!selectedBoard) return;
+    if (!selectedDeviceItem) return;
 
     const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`⌛️ Installing ${packageDesignator} on ${selectedBoard}...`);
+    showStatus(`⌛️ Installing ${packageDesignator} on ${selectedDeviceItem}...`);
     
     const result = await window.api.installPackage(package);
 
     if (result.success) {
-        showStatus(`✅ '${packageDesignator}' installation complete on ${selectedBoard}.`);
+        showStatus(`✅ '${packageDesignator}' installation complete on ${selectedDeviceItem}.`);
     } else {
         showStatus(`❌ Failed to install '${packageDesignator}': ${result.error}`);
     }

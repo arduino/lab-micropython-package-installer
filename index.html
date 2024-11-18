@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/item-selection.css">
 </head>
 <body>
 
@@ -16,22 +17,16 @@
         <div class="main-container">
             <h1>MicroPython Package Installer</h1>
 
-            <!-- Detected Boards Title -->
-            <div class="section-title">Detected Boards</div>
-
             <!-- Board Selection -->
-            <div id="board-selection">
-                <!-- Example board items -->
-                <div class="board-item">Portenta H7</div>
-                <div class="board-item">Giga R1</div>
-                <div class="board-item">Nano 33 BLE</div>
+            <div class="container" id="device-selection">
+                <div class="section-title">Detected Boards</div>
+                <div class="item-selection-list"></div>
+                <div id="reload-link-container"><a id="reload-link">Reload</a></div>
             </div>
 
-            <!-- Packages Title -->
-            <div class="section-title">Packages</div>
-
             <!-- Search Field -->
-            <div class="search-container">
+            <div class="container" id="search-container">
+                <div class="section-title">Packages</div>
                 <div id="search">
                     <span id="search-icon">
                         <!-- Magnifying glass SVG -->
