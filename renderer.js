@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchPackages();
     
     deviceSelectionList.addEventListener("device-selected", (event) => {
-        const selectedDevice = event.target;
-        console.log("Selected device:", selectedDevice);
+        selectedDeviceItem = event.target;
+        console.log("Selected device item:", selectedDeviceItem);
         // Enable the install buttons if a board is selected
         setInstallButtonsEnabled(true);
     });
@@ -62,9 +62,11 @@ function createDeviceSelectorItem(device) {
 
     // Populate the device item with data attributes so that we can easily access them later
     // when the user selects a device and we need to flash the firmware
+    deviceItem.setAttribute("data-name", device.name);
+    deviceItem.setAttribute("data-manufacturer", device.manufacturer);
     deviceItem.setAttribute("data-vid", device.vendorID);
     deviceItem.setAttribute("data-pid", device.productID);
-    deviceItem.setAttribute("data-port", device.serialPort);
+    deviceItem.setAttribute("data-port", device.serialPort);    
     deviceItem.addEventListener("click", () => {
         selectDevice(deviceItem);
     });
@@ -113,20 +115,6 @@ function displayDevices(deviceList, container) {
     }
 }
 
-// TODO
-function getSelectedDeviceData(container) {
-    const selectedElement = container.querySelector(".selected");
-    
-    if(!selectedElement) {
-      return null;
-    }
-  
-    return {
-      vendorID: parseInt(selectedElement.dataset.vid),
-      productID: parseInt(selectedElement.dataset.pid)
-    };
-  }
-
 function setInstallButtonsEnabled(enabled) {
     const installButtons = document.querySelectorAll('.install');
     const manualInstallButton = document.getElementById('manual-install-btn');
@@ -147,7 +135,7 @@ function performSearch() {
 
     renderPackageList(filteredPackages, searchTerm);
     updateResultsCount(filteredPackages.length, searchTerm);
-    setInstallButtonsEnabled(selectedDeviceItem == null); // Disable buttons if no board is selected
+    setInstallButtonsEnabled(selectedDeviceItem !== null); // Disable buttons if no board is selected
 }
 
 function renderPackageList(packages, searchTerm) {
@@ -205,13 +193,14 @@ function toggleUserInteraction(enabled) {
     const searchField = document.getElementById('search-field');
     const githubUrlInput = document.getElementById('github-url');
     const manualInstallButton = document.getElementById('manual-install-btn');
-    const boardItems = document.querySelectorAll('.selection-item');
+    const boardItems = document.querySelectorAll('.selection-item');    
 
     // Disable UI components
     installButtons.forEach(button => button.disabled = !enabled);
     searchField.disabled = !enabled;
     githubUrlInput.disabled = !enabled;
     manualInstallButton.disabled = !enabled;
+    reloadDeviceListLink.disabled = !enabled;
     boardItems.forEach(board => board.style.pointerEvents = enabled ? 'auto' : 'none');
 
     if(enabled){
@@ -220,17 +209,19 @@ function toggleUserInteraction(enabled) {
 }
 
 async function installPackage(package) {
-    if (!selectedDeviceItem) return;
-
+    if (!selectedDeviceItem) {
+        throw new Error('No board selected.');
+    }
+    const serialPort = selectedDeviceItem.dataset.port;
     const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`⌛️ Installing ${packageDesignator} on ${selectedDeviceItem}...`);
+    showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`);
     
-    const result = await window.api.installPackage(package);
+    const result = await window.api.installPackage(package, serialPort);
 
     if (result.success) {
-        showStatus(`✅ '${packageDesignator}' installation complete on ${selectedDeviceItem}.`);
+        showStatus(`✅ '${packageDesignator}' installation complete on ${selectedDeviceItem.dataset.name}.`);
     } else {
         showStatus(`❌ Failed to install '${packageDesignator}': ${result.error}`);
     }

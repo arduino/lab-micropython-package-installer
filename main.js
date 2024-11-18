@@ -60,13 +60,16 @@ ipcMain.handle('get-boards', async () => {
   }
 });
 
-ipcMain.handle('install-package', async (event, aPackage) => {
+ipcMain.handle('install-package', async (event, aPackage, serialPort) => {
   const packageManager = new upyPackage.PackageManager();
   const boardManager = new upyPackage.DeviceManager();  
 
   try {
-      // TODO select the board from the frontend
-      const selectedBoard = (await boardManager.getConnectedDevices(ARDUINO_VID))[0];
+      const selectedBoard = await boardManager.getConnectedBoardByPort(serialPort);
+      if(!selectedBoard) {
+        throw new Error(`No board found on port ${serialPort}`);
+      }
+
       if(!aPackage.name && aPackage.url) {
         await packageManager.installPackageFromURL(aPackage.url, selectedBoard);
       } else {
