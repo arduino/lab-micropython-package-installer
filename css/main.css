@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 :root {
     --main-control-color: #008184;
     --main-control-color-hover: #005c5f;
@@ -7,16 +13,20 @@
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
-    margin: 0;
-    padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+html,
+body,
+button {
+    font-family: 'Open Sans', sans-serif;
+}
+
 h1 {
     text-align: center;
+    margin-bottom: 20px;
 }
 
 /* Input field styling */
@@ -26,4 +36,14 @@ input[type="text"], input[type="search"] {
     padding: 10px 20px;
     border-radius: 8px;
     border: 1px solid #ccc;
+}
+
+a,
+a:link,
+a:active,
+a:focus,
+a:visited {
+    cursor: pointer;
+    text-decoration: none;
+    color: rgb(103, 163, 255);
 }

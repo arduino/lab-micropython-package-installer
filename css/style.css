@@ -1,3 +1,10 @@
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--main-flexbox-gap);
+}
+
 .upper-section {
     background-color: #fff; /* White background for the upper section */
     padding: 20px 0;
@@ -57,7 +64,6 @@
 .section-title {
     font-size: 1.2em;
     font-weight: 600;
-    margin-bottom: 10px;
 }
 
 .divider {
@@ -67,24 +73,9 @@
     width: 100%;
 }
 
-#board-selection {
-    display: flex;
-    gap: 10px;
+#device-selection {
+    flex-direction: column;
     margin-bottom: 20px;
-}
-
-.board-item {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.board-item:hover {
-    background-color: #e0e0e0;
 }
 
 /* Status Bar */
@@ -107,8 +98,8 @@
 }
 
 /* Search Container */
-.search-container {
-    margin-bottom: 20px;
+#search-container {
+    flex-direction: column;
 }
 
 /* Search Box */
