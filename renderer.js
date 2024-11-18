@@ -183,7 +183,8 @@ function renderPackageList(packages, searchTerm) {
         });
 
         moreInfoButton.addEventListener('click', () => {
-            openPackageInfo(pkg.url);
+            const targetURL = pkg.docs || pkg.url;
+            openPackageInfo(targetURL);
         });
     });
 }
