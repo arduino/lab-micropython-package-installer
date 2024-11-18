@@ -200,11 +200,11 @@ function toggleUserInteraction(enabled) {
     searchField.disabled = !enabled;
     githubUrlInput.disabled = !enabled;
     manualInstallButton.disabled = !enabled;
-    reloadDeviceListLink.disabled = !enabled;
+    reloadDeviceListLink.style.pointerEvents = enabled ? 'auto' : 'none';
     boardItems.forEach(board => board.style.pointerEvents = enabled ? 'auto' : 'none');
 
     if(enabled){
-        setInstallButtonsEnabled(); // Re-enable buttons only if a board is selected
+        setInstallButtonsEnabled(selectedDeviceItem != null); // Re-enable buttons only if a board is selected
     }
 }
 
