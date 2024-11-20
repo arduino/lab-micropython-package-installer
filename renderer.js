@@ -2,6 +2,7 @@ let cachedPackages = []; // Global variable to cache packages
 let selectedDeviceItem = null;  // Variable to keep track of the selected board
 const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
+const searchField = document.getElementById('search-field');
 
 async function fetchPackages(){
     const packageList = document.getElementById('package-list');
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await reloadDeviceList();
     });
     await reloadDeviceList(); // Initial load of the device list
+    searchField.focus();
 });
 
 function selectDevice(deviceItem) {
@@ -123,8 +125,7 @@ function setInstallButtonsEnabled(enabled) {
     manualInstallButton.disabled = !enabled;
 }
 
-function performSearch() {
-    const searchField = document.getElementById('search-field');
+function performSearch() {    
     const searchTerm = searchField.value.toLowerCase();
 
     // Use cached package list for filtering
