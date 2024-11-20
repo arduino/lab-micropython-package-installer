@@ -47,8 +47,14 @@
                 Advanced Options
             </div>
             <div id="advanced-options" class="advanced-options">
-                <input type="text" id="github-url" placeholder="Enter GitHub URL of package">
-                <button id="manual-install-btn" class="primary" onclick="manualInstall()">Install</button>
+                <div class="container">
+                    <input type="text" id="github-url" placeholder="Enter GitHub URL of package">
+                    <button id="manual-install-btn" class="primary" onclick="manualInstall()">Install</button>
+                </div>
+                <div>
+                    <input type="checkbox" id="compile-files" checked />
+                    <label for="compile-files">Compile files before uploading</label>
+                </div>
             </div>
 
         </div>

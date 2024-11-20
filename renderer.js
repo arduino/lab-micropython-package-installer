@@ -3,6 +3,7 @@ let selectedDeviceItem = null;  // Variable to keep track of the selected board
 const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
 const searchField = document.getElementById('search-field');
+const compileFilesCheckbox = document.getElementById('compile-files');
 
 async function fetchPackages(){
     const packageList = document.getElementById('package-list');
@@ -220,7 +221,8 @@ async function installPackage(package) {
     showOverlay();
     showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`);
     
-    const result = await window.api.installPackage(package, serialPort);
+    const compileFiles = compileFilesCheckbox.checked;
+    const result = await window.api.installPackage(package, serialPort, compileFiles);
 
     if (result.success) {
         showStatus(`✅ '${packageDesignator}' installation complete on ${selectedDeviceItem.dataset.name}.`);

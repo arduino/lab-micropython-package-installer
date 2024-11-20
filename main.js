@@ -63,9 +63,9 @@ ipcMain.handle('get-boards', async () => {
   }
 });
 
-ipcMain.handle('install-package', async (event, aPackage, serialPort) => {
-  const packageManager = new upyPackage.PackageManager();
-  const boardManager = new upyPackage.DeviceManager();  
+ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFiles) => {
+  const packageManager = new upyPackage.PackageManager(compileFiles);
+  const boardManager = new upyPackage.DeviceManager();
 
   try {
       const selectedBoard = await boardManager.getConnectedBoardByPort(serialPort);
