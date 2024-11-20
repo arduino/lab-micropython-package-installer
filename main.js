@@ -1,30 +1,33 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
-// const { PackageManager } = require('upy-package');  // Import the PackageManager class
 
 let mainWindow;
 let upyPackage;
 const ARDUINO_VID = 0x2341;
 
-app.on('ready', async() => {
-  // Load the PackageManager class from the upy-package module
-  upyPackage = await import('upy-package');
+function createWindow() {
   mainWindow = new BrowserWindow({
-      width: 800,
-      height: 800,
-      minWidth: 600,
-      minHeight: 600,
-      webPreferences: {
-          preload: path.join(__dirname, 'preload.js'), // Preload script for contextBridge
-          nodeIntegration: false,
-          contextIsolation: true
-      }
+    width: 800,
+    height: 800,
+    minWidth: 600,
+    minHeight: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'), // Preload script for contextBridge
+      nodeIntegration: false,
+      contextIsolation: true
+    }
   });
 
   mainWindow.loadFile('index.html');
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
   });
+}
+
+app.on('ready', async() => {
+  // Load the PackageManager class from the upy-package module
+  upyPackage = await import('upy-package');
+  createWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -73,9 +76,6 @@ ipcMain.handle('install-package', async (event, aPackage, serialPort) => {
       if(!aPackage.name && aPackage.url) {
         await packageManager.installPackageFromURL(aPackage.url, selectedBoard);
       } else {
-        // Consider getting the package by name from the package manager
-        // in case there is not the full package info available in the frontend:
-        // const package = await packageManager.getPackage(aPackage.name);
         await packageManager.installPackage(aPackage, selectedBoard);
       }
       return { success: true };
