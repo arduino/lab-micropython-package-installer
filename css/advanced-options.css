@@ -1,0 +1,36 @@
+/* Advanced Options Toggle */
+.advanced-toggle {
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    color: var(--main-control-color);
+}
+
+.advanced-toggle #disclosure-icon {
+    margin-right: 8px; /* Add some spacing between the triangle and the text */
+}
+
+.advanced-options {
+    margin-top: 10px;
+    align-items: center;
+    display: none; /* Hidden by default */
+}
+
+.advanced-options.visible {
+    display: flex;
+}
+
+.advanced-options input {
+    width: calc(100% - 120px); /* Adjust width for button space */
+    margin-right: 10px;
+}
+
+.advanced-options button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}

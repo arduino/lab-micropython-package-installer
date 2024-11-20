@@ -1,0 +1,35 @@
+/* Search Container */
+#search-container {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/* Search Box */
+#search {
+    position: relative;
+    width: 100%;
+}
+
+#search-field {
+    width: 100%;
+    padding-left: 35px; /* Adjusted padding for the icon */
+}
+
+/* Magnifying Glass SVG Icon */
+#search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 1.2em;
+    color: #555;
+    margin-top: 2px;
+}
+
+/* Results Count */
+#results-count {
+    font-weight: bold;
+    color: #555;
+    text-align: left;
+}
