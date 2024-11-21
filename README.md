@@ -1,9 +1,9 @@
-# 🐍 MicroPython Package Installer for Arduino
+# 📦 MicroPython Package Installer for Arduino
 
 MicroPython Package Installer for Arduino is a cross-platform tool that streamlines the process of downloading and installing MicroPython packages on compatible Arduino boards. It is compatible with macOS, Linux, and Windows and is built using the Electron framework.
 
 ## ✨ Features
-- Browse through Arduino's official MicroPython package index
+- Browse through Arduino's official [MicroPython package index](https://github.com/arduino/package-index-py)
 - Find packages based on their name, their description or other meta data
 - Install MicroPython packages including their dependencies
 - Cross compile python files for reduced storage requirements and faster execution
