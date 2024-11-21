@@ -58,7 +58,7 @@ function selectDevice(deviceItem) {
     deviceItem.dispatchEvent(new Event("device-selected", { bubbles: true }));
 }
 
-function createDeviceSelectorItem(device) {
+function createDeviceSelectorItem(device, showPort) {
     const fullDeviceName = device.manufacturer + " " + device.name;
     const deviceItem = document.createElement("button");
     deviceItem.classList.add("selection-item");
@@ -82,6 +82,18 @@ function createDeviceSelectorItem(device) {
     deviceLabel.classList.add("selection-item-label");
     deviceLabel.textContent = device.name;
     deviceItem.appendChild(deviceLabel);
+
+    if (showPort) {
+        const detailsLabel = document.createElement("span");
+        detailsLabel.classList.add("selection-item-details-label");
+        let portLabel = device.serialPort;
+        // Remove the '/dev/' prefix from the port name if it exists
+        if (portLabel.startsWith("/dev/")) {
+            portLabel = portLabel.slice(5);
+        }
+        detailsLabel.textContent = portLabel;
+        deviceItem.appendChild(detailsLabel);
+    }
 
     return deviceItem;
 }
@@ -108,8 +120,10 @@ function displayDevices(deviceList, container) {
     // TODO: Uncomment when implementing auto-reload on start
     // reloadLinkContainer.style.display = deviceList.length > 0 ? 'block' : 'none';
 
+    const showPort = deviceList.length > 1;
+
     for (const device of deviceList) {
-        container.appendChild(createDeviceSelectorItem(device));
+        container.appendChild(createDeviceSelectorItem(device, showPort));
     }
 
     // If there is only one device, select it

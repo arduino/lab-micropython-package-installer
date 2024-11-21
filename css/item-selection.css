@@ -32,6 +32,12 @@
     margin-top: 0.5rem;
 }
 
+.selection-item-details-label {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    color: #666666;
+}
+
 .selection-item img {
     height: 68px;
 }
