@@ -1,8 +1,19 @@
 const os = require('os');
 const path = require('path');
 
+const platform = os.platform();
+const architecture = os.arch();
+
+const applicationNames = {
+  'darwin': 'MicroPython-Package-Installer',
+  'win32': 'MicroPython-Package-Installer',
+  'linux': 'micropython-package-installer'
+};
+
+const applicationName = applicationNames[platform];
 let filesToExclude = [];
-switch (os.platform()) {
+
+switch (platform) {
   case 'win32':
     filesToExclude = ["(\/bin\/linux$)",
                       "(\/bin\/darwin$)",
@@ -29,7 +40,7 @@ switch (os.platform()) {
     break;
 }
 
-renamingRules = {
+const distributableRenamingRules = {
   "darwin": { from: 'darwin', to: 'macOS' },
   "win32": { from: 'Setup', to: 'Windows-Setup' },
   "linux": { from: 'amd64', to: 'Linux' }
@@ -38,58 +49,48 @@ renamingRules = {
 // Check options at https://electron.github.io/electron-packager/main/interfaces/electronpackager.options.html
 module.exports = {
   hooks: {
-    postMake: async (forgeConfig, options) => {
+    postMake: async (forgeConfig, results) => {
       const fs = require('fs');
 
-      for(let option of options) {
-        option.artifacts.forEach((artifact, index) => {  
+      for(let result of results) {
+        result.artifacts.forEach((artifact, index) => {  
           const fileName = path.basename(artifact);          
-          const renameInfo = renamingRules[option.platform];
-          const targetName = fileName.replace(renameInfo.from, renameInfo.to);
+          const renameRule = distributableRenamingRules[result.platform];
+          
+          if(!fileName.includes(renameRule.from)) {
+            return;
+          }
+          const targetName = fileName.replace(renameRule.from, renameRule.to);
           console.log(`Renaming ${fileName} to ${targetName}`);
           const targetPath = path.join(path.dirname(artifact), targetName);
 
           try {
             fs.renameSync(artifact, targetPath);
-            option.artifacts[index] = targetPath;
+            result.artifacts[index] = targetPath;
           } catch (err) {
             console.error(err);
           }
         });
       }
-      return options;
+      return results;
     }
   },
   packagerConfig: {
     icon: './assets/app-icon',
-    name: 'MicroPython Package Installer',
-    executableName: 'upy-package-installer',
+    name: applicationName, // Name cannot contain spaces because gyp doesn't support them
+    arch: 'all',
     ignore: filesToExclude,
     prune: true,
     derefSymlinks: true,
-    afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
-      const fs = require('fs');
-      const path = require('path');
-      // Remove files under node_modules/@serialport/bindings-cpp/build/node_gyp_bins/
-      // because the cause notarization issues and they are not needed after building.
-      // One of the files is a symlink to python which is outside of the app bundle.
-      // SEE: https://github.com/nodejs/node-gyp/issues/2713#issuecomment-1400959609
-      const nodeGypBinsDir = path.join(buildPath, 'node_modules/@serialport/bindings-cpp/build/node_gyp_bins/');
-      // Remove files under node_modules/@serialport/bindings-cpp/prebuilds/
-      // because they are not needed after building and they cause code signing issues under Windows.
-      // signtool.exe would e.g. try to sign android-arm\node.napi.armv7.node which will in fail.
-      const nodeGypPrebuildsDir = path.join(buildPath, 'node_modules/@serialport/bindings-cpp/prebuilds/');
-
-      [nodeGypBinsDir, nodeGypPrebuildsDir].forEach(dir => {
-        if (fs.existsSync(dir)) {
-          fs.rmSync(dir, { recursive: true });
-        }
-      });
-
-      callback();
+    protocols: [ {
+      name: 'micropython-package-installer',
+      schemes: ['micropython-package-installer']
     }],
+    // osxUniversal: {
+    //   outAppPath: './out/' + applicationName + '-darwin-universal.app',
+    // },
     osxSign: {
-      app: './out/MicroPython Package Installer-darwin-x64/MicroPython Package Installer.app',
+      app: './out/' + applicationName + '-darwin-' + architecture + '/' + applicationName + '.app',
       optionsForFile: (filePath) => {
         return {
           entitlements: './config/entitlements.plist'
@@ -99,7 +100,7 @@ module.exports = {
     },
     osxNotarize: process.env.APPLE_API_KEY_PATH ? {
       tool: 'notarytool',
-      appPath: './out/MicroPython Package Installer-darwin-x64/MicroPython Package Installer.app',
+      appPath: './out/' + applicationName + '-darwin-' + architecture + '/' + applicationName + '.app',
       appleApiKey: process.env.APPLE_API_KEY_PATH,
       appleApiKeyId: process.env.APPLE_API_KEY_ID,
       appleApiIssuer: process.env.APPLE_API_ISSUER,
@@ -115,7 +116,7 @@ module.exports = {
         // See: https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.WindowsSignOptions.html
         // See: https://www.npmjs.com/package/@electron/windows-sign
         signWithParams : process.env.WINDOWS_CERTIFICATE_FILE ? [
-          '/d', '\"MicroPython Installer\"',
+          '/d', '\"MicroPython Package Installer\"',
           '/f', `\"${process.env.WINDOWS_CERTIFICATE_FILE}\"`,
           '/csp', '\"eToken Base Cryptographic Provider\"',
           '/kc', `\"[{{${process.env.WINDOWS_CERTIFICATE_PASSWORD}}}]=${process.env.WINDOWS_CERTIFICATE_CONTAINER}\"`,
