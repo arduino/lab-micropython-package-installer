@@ -66,7 +66,8 @@ ipcMain.handle('get-packages', async () => {
 ipcMain.handle('get-boards', async () => {
   const boardManager = new upyPackage.DeviceManager();
   try {
-      return await boardManager.getConnectedDevices(ARDUINO_VID);
+      // Pass ARDUINO_VID to filter for Arduino boards
+      return await boardManager.getConnectedDevices();
   } catch (error) {
       console.error('Failed to fetch boards:', error);
       return [];

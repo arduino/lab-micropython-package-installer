@@ -75,7 +75,13 @@ function selectDevice(deviceItem) {
 }
 
 function createDeviceSelectorItem(device, showPort) {
-    const fullDeviceName = device.manufacturer + " " + device.name;
+    let fullDeviceName;
+
+    if(device.name == "Generic Device"){
+        fullDeviceName = device.name;
+    } else {
+        fullDeviceName = `${device.manufacturer} ${device.name}`;
+    }
     const deviceItem = document.createElement("button");
     deviceItem.classList.add("selection-item");
 
