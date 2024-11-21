@@ -148,6 +148,7 @@ function performSearch() {
         pkg.name.toLowerCase().includes(searchTerm) ||
         (pkg.author && pkg.author.toLowerCase().includes(searchTerm))
         || (pkg.description && pkg.description.toLowerCase().includes(searchTerm))
+        || (pkg.tags && pkg.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
     );
 
     renderPackageList(filteredPackages, searchTerm);
