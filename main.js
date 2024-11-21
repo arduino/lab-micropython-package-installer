@@ -63,8 +63,8 @@ ipcMain.handle('get-boards', async () => {
   }
 });
 
-ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFiles) => {
-  const packageManager = new upyPackage.PackageManager(compileFiles);
+ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFiles, overwriteExisting) => {
+  const packageManager = new upyPackage.PackageManager(compileFiles, overwriteExisting);
   const boardManager = new upyPackage.DeviceManager();
 
   try {

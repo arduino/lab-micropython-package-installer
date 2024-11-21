@@ -4,6 +4,7 @@ const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
 const searchField = document.getElementById('search-field');
 const compileFilesCheckbox = document.getElementById('compile-files');
+const overwriteExistingCheckbox = document.getElementById('overwrite-existing');
 
 async function fetchPackages(){
     const packageList = document.getElementById('package-list');
@@ -240,7 +241,8 @@ async function installPackage(package) {
     showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`);
     
     const compileFiles = compileFilesCheckbox.checked;
-    const result = await window.api.installPackage(package, serialPort, compileFiles);
+    const overwriteExisting = overwriteExistingCheckbox.checked;
+    const result = await window.api.installPackage(package, serialPort, compileFiles, overwriteExisting);
 
     if (result.success) {
         showStatus(`✅ '${packageDesignator}' installation complete on ${selectedDeviceItem.dataset.name}.`);
