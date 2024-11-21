@@ -23,7 +23,7 @@
 }
 
 .selection-item.selected {
-    outline: 3px solid #73A3F8;
+    outline: 3px solid var(--selection-color);
     background-color: #F2F6FD;
 }
 

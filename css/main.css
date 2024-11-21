@@ -10,6 +10,7 @@
     --main-flexbox-gap: 16px;
     --secondary-text-color: #87898b;
     --disabled-button-background: #e0e0e0;
+    --selection-color: #73A3F8;
 }
 
 body {
@@ -36,6 +37,10 @@ input[type="text"], input[type="search"] {
     padding: 10px 20px;
     border-radius: 8px;
     border: 1px solid #ccc;
+}
+
+input[type="search"]:focus, input[type="text"]:focus {
+    outline-color: var(--selection-color);
 }
 
 input[type="checkbox"] {
