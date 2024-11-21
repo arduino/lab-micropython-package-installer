@@ -45,10 +45,11 @@ app.on('activate', () => {
 ipcMain.handle('get-packages', async () => {
   const packageManager = new upyPackage.PackageManager();
   try {
-      return await packageManager.getPackageList();
+      const packages = await packageManager.getPackageList();
+      return { success: true, data: packages };
   } catch (error) {
       console.error('Failed to fetch packages:', error);
-      return [];
+      return { success: false, error: error.message };
   }
 });
 

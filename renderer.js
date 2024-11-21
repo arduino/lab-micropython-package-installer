@@ -10,15 +10,17 @@ async function fetchPackages(){
 
     // Show loading spinner
     packageList.innerHTML = '<div class="loading-spinner"></div>';
+    const result = await window.api.getPackages();
     
-    try {
-        const packages = await window.api.getPackages();
-        cachedPackages = packages;
+    if(result.success){
+        cachedPackages = result.data;
         renderPackageList(cachedPackages, ''); // Render the fetched packages
         performSearch(); // Initial render with all packages                
-    } catch (error) {
-        console.error('Error fetching packages:', error);
-        document.getElementById('package-list').innerHTML = '<p>Error loading packages.</p>';
+    } else {
+        console.error('Error fetching packages:', result.error);
+        document.getElementById('package-list').innerHTML = `
+            <div>Couldn't load packages. Check your Internet connection and try again.</div>
+            <div><a onclick="fetchPackages();">Reload</a>`;
     }
 }
 
