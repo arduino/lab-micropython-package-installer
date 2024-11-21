@@ -47,6 +47,7 @@ input[type="checkbox"] {
 
 label {
     vertical-align: middle;
+    margin-left: 8px;
 }
 
 a,

@@ -16,8 +16,8 @@
     border-radius: 20px;
     border: none;
     background-color: #F8F8F8;
-    width: 150px;
-    height: 135px;
+    width: 144px;
+    height: 128px;
     cursor: pointer;
     user-select: none;
 }
@@ -30,4 +30,8 @@
 .selection-item-label {
     font-size: 0.9rem;
     margin-top: 0.5rem;
+}
+
+.selection-item img {
+    height: 68px;
 }
