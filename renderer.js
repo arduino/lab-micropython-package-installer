@@ -133,6 +133,7 @@ function performSearch() {
     const filteredPackages = searchTerm === '' ? cachedPackages : cachedPackages.filter(pkg =>
         pkg.name.toLowerCase().includes(searchTerm) ||
         (pkg.author && pkg.author.toLowerCase().includes(searchTerm))
+        || (pkg.description && pkg.description.toLowerCase().includes(searchTerm))
     );
 
     renderPackageList(filteredPackages, searchTerm);
