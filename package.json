@@ -7,13 +7,23 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Sebastian Romero",
+    "email": "s.romero@arduino.cc",
+    "url": "https://github.com/sebromero"
+  },
+  "maintainers": [
+    {
+      "name": "Arduino",
+      "email": "info@arduino.cc"
+    }
+  ],
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "electron": "^31.3.1"
   },
   "dependencies": {
-    "upy-package": "file:../upy-package"
+    "upy-package": "github:arduino/upy-package"
   }
 }
