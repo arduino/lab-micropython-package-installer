@@ -1,0 +1,30 @@
+name: Build
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: windows-2019
+          - os: ubuntu-latest
+          - os: macos-latest
+    runs-on: ${{ matrix.config.os }}
+    timeout-minutes: 90
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@master
+      with:
+        node-version: 18
+    - name: install dependencies
+      run: npm install
+    - name: build
+      run: npm run make

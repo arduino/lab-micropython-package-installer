@@ -1,0 +1,93 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'arduino/lab-micropython-installer'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-sign-pc]
+        include:
+          - os: macos-latest
+            publish-flags: --arch=x64,arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@master
+      with:
+        node-version: 18
+    - name: install dependencies
+      shell: bash
+      run: npm install    
+    - name: install signing certificate (macOS)
+      if: ${{ runner.OS == 'macOS' }}
+      shell: bash
+      env:
+        SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64_MACOS }}
+        SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD_MACOS }}
+        # BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+        # BUILD_PROVISION_PROFILE_PATH: ${{ runner.temp }}/build_pp.mobileprovision
+        KEYCHAIN_PATH: ${{ runner.temp }}/app-signing.keychain-db
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        APPLE_API_KEY_DATA: ${{ secrets.APPLE_API_KEY }}
+        APPLE_API_KEY_PATH: ${{ runner.temp }}/auth_key.p8
+      run: |
+        # SEE: https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development
+        if [ -n "$SIGNING_CERTIFICATE_BASE64" ]; then
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$SIGNING_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          # echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $BUILD_PROVISION_PROFILE_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$SIGNING_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+        fi
+
+        # Export API key for App Store Connect API (required for notarization)
+        if [ -n "$APPLE_API_KEY_DATA" ]; then
+          echo -n "$APPLE_API_KEY_DATA" > $APPLE_API_KEY_PATH
+        fi
+    - name: install signing certificates (Windows)  
+      if: ${{ runner.OS == 'Windows' }}    
+      # SEE: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#using-a-specific-shell
+      shell: bash
+      env: 
+        WINDOWS_BUILD_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64_WINDOWS }}      
+        WINDOWS_CERTIFICATE_FILE: ${{ runner.temp }}/signing_certificate.cer
+      run: |
+        if [ -n "$WINDOWS_BUILD_CERTIFICATE_BASE64" ]; then
+          echo "$WINDOWS_BUILD_CERTIFICATE_BASE64" | base64 --decode > "$WINDOWS_CERTIFICATE_FILE"
+        fi
+        # Inspect certificate for debugging: openssl x509 -noout -text -in cert_new.cer -passin "pass:yourpassword"
+    - name: publish
+      env:
+        # DEBUG: 'electron-osx-sign*'
+        # DEBUG: 'electron-windows-installer*'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        KEYCHAIN_PATH: ${{ runner.temp }}/app-signing.keychain-db
+        APPLE_API_KEY_PATH: ${{ runner.temp }}/auth_key.p8
+        APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+        APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        WINDOWS_CERTIFICATE_FILE: ${{ runner.temp }}/signing_certificate.cer
+        WINDOWS_CERTIFICATE_PASSWORD: '${{ secrets.SIGNING_CERTIFICATE_PASSWORD_WINDOWS }}'
+        WINDOWS_CERTIFICATE_CONTAINER: '${{ secrets.SIGNING_CERTIFICATE_CONTAINER_WINDOWS }}'
+
+      shell: bash
+      run: npm run publish -- ${{ matrix.publish-flags }}
