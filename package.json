@@ -1,5 +1,5 @@
 {
-  "name": "upy-package-installer",
+  "name": "micropython-package-installer",
   "version": "1.0.0",
   "description": "A tool to install MicroPython packages onto supported Arduino boards.",
   "main": "main.js",
