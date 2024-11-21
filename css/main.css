@@ -50,6 +50,10 @@ input[type="checkbox"] {
     height: 1rem;
 }
 
+input::placeholder {
+    opacity: 0.75;
+}
+
 label {
     vertical-align: middle;
     margin-left: 8px;

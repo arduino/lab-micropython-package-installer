@@ -1,10 +1,19 @@
 let cachedPackages = []; // Global variable to cache packages
 let selectedDeviceItem = null;  // Variable to keep track of the selected board
+
+let customURLplaceholders = ['github:janedoe/button-mpy', 
+    'github:johndoe/player@v1.2.0',
+    'github:janedoe/infrared/receiver',
+    'github:johndoe/mpy-web/server.py',
+    'https://example.com/recorder.py'
+];
+
 const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
 const searchField = document.getElementById('search-field');
 const compileFilesCheckbox = document.getElementById('compile-files');
 const overwriteExistingCheckbox = document.getElementById('overwrite-existing');
+const githubUrlInput = document.getElementById('github-url');
 
 async function fetchPackages(){
     const packageList = document.getElementById('package-list');
@@ -47,6 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     await reloadDeviceList(); // Initial load of the device list
     searchField.focus();
+    
+    // Prepend each value with same text
+    const placeholders = customURLplaceholders.map(value => 'Enter custom URL e.g. ' + value);
+    animatePlaceholder(githubUrlInput, placeholders);
 });
 
 function selectDevice(deviceItem) {
@@ -212,8 +225,6 @@ function renderPackageList(packages, searchTerm) {
 
 function toggleUserInteraction(enabled) {
     const installButtons = document.querySelectorAll('.install');
-    const searchField = document.getElementById('search-field');
-    const githubUrlInput = document.getElementById('github-url');
     const manualInstallButton = document.getElementById('manual-install-btn');
     const boardItems = document.querySelectorAll('.selection-item');    
 
@@ -314,6 +325,15 @@ async function manualInstall() {
     }
 
     await installPackage({ url: githubUrl });
+}
+
+function animatePlaceholder(element, values, duration = 3500) {
+    let index = 0;
+    const interval = setInterval(() => {
+        element.placeholder = values[index];
+        index = (index + 1) % values.length;
+    }, duration);
+    return interval;
 }
 
 function showStatus(message, duration = null) {
