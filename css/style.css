@@ -98,7 +98,7 @@
 /* Loading Spinner */
 .loading-spinner {
     border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
+    border-top: 6px solid var(--main-control-color);
     border-radius: 50%;
     width: 40px;
     height: 40px;

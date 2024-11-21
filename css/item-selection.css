@@ -3,6 +3,7 @@
     justify-content: flex-start;
     align-items: center;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: var(--main-flexbox-gap);
 }
 
@@ -16,8 +17,8 @@
     border-radius: 20px;
     border: none;
     background-color: #F8F8F8;
-    width: 144px;
-    height: 128px;
+    width: 140px;
+    height: 120px;
     cursor: pointer;
     user-select: none;
 }
@@ -34,10 +35,9 @@
 
 .selection-item-details-label {
     font-size: 0.8rem;
-    margin-top: 0.25rem;
     color: #666666;
 }
 
 .selection-item img {
-    height: 68px;
+    height: 60px;
 }
