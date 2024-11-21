@@ -1,6 +1,7 @@
 {
   "name": "upy-package-installer",
   "version": "1.0.0",
+  "description": "A tool to install MicroPython packages onto supported Arduino boards.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -28,7 +29,6 @@
     }
   ],
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@electron-forge/cli": "^7.5.0",
     "@electron-forge/maker-deb": "^7.5.0",
