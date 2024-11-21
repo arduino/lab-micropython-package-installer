@@ -1,5 +1,15 @@
+if (require('electron-squirrel-startup')) return;
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+
+// Handle events from windows squirrel installer
+if (process.platform === "win32" && handleSquirrelEvent()) {
+  // squirrel event handled and app will exit in 1000ms, so don't do anything else
+  return;
+}
+
+const { updateElectronApp } = require('update-electron-app')
+updateElectronApp()
 
 let mainWindow;
 let upyPackage;
