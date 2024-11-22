@@ -291,26 +291,6 @@ function updateResultsCount(count, searchTerm) {
     }
 }
 
-function getPackages() {
-    return [
-        {
-            title: "Example Package 1",
-            author: "Arduino",
-            description: "A Python client for the Arduino IoT cloud.",
-            tags: ["cloud", "iot"],
-            license: "MIT"
-        },
-        {
-            title: "Example Package 2",
-            author: "OpenAI",
-            description: "A package for advanced language models.",
-            tags: ["AI", "NLP"],
-            license: "Apache-2.0"
-        },
-        // Add more packages here
-    ];
-}
-
 function toggleAdvancedOptions() {
     const advancedOptions = document.getElementById('advanced-options');
     const disclosureIcon = document.getElementById('disclosure-icon');
