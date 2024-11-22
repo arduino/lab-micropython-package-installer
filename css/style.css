@@ -76,34 +76,50 @@
     margin-bottom: 20px;
 }
 
+.hidden {
+    display: none;
+}
+
 /* Status Bar */
 .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: var(--main-flexbox-gap);
     font-family: 'Roboto Mono', monospace;
     background-color: rgba(0, 0, 0, 0.75);
     color: white;
-    padding: 0 10px; /* Set initial padding to 0 for smooth slide */
+    padding: 0px 20px; /* Set initial padding to 0 for smooth slide */
     margin-top: 10px;
-    text-align: center;
-    height: 0;
+    max-height: 0;
     opacity: 0;
     transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s ease;
 }
 
 .status-bar.visible {
-    height: auto;
-    padding: 10px;
+    display: flex;
+    max-height: 480px;
+    padding: 10px 20px;
     opacity: 1;
 }
 
 /* Loading Spinner */
 .loading-spinner {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid var(--main-control-color);
+    border: 6px solid #eee;
+    border-top-color: var(--secondary-text-color);
     border-radius: 50%;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
-    margin: 40px auto; /* Centers the spinner */
+}
+
+.loading-spinner.primary {
+    border-top-color: var(--main-control-color);
+}
+
+.loading-spinner.small {
+    width:24px;
+    height: 24px;
+    border-width: 4px;
 }
 
 @keyframes spin {

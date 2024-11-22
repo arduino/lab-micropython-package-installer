@@ -8,20 +8,22 @@ let customURLplaceholders = ['github:janedoe/button-mpy',
     'https://example.com/recorder.py'
 ];
 
+const statusBar = document.getElementById('status-bar');
+const statusMessage = document.getElementById('status-message');
 const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
 const searchField = document.getElementById('search-field');
 const compileFilesCheckbox = document.getElementById('compile-files');
 const overwriteExistingCheckbox = document.getElementById('overwrite-existing');
 const githubUrlInput = document.getElementById('github-url');
+const statusBarLoadingSpinner = document.querySelector('#status-bar .loading-spinner');
 
 async function fetchPackages(){
     const packageList = document.getElementById('package-list');
 
     // Show loading spinner
-    packageList.innerHTML = '<div class="loading-spinner"></div>';
+    packageList.innerHTML = '<div class="loading-spinner primary" style="margin: 50px auto;"></div>';
     const result = await window.api.getPackages();
-    
     if(result.success){
         cachedPackages = result.data;
         renderPackageList(cachedPackages, ''); // Render the fetched packages
@@ -255,7 +257,7 @@ async function installPackage(package) {
     const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`);
+    showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`, true);
     
     const compileFiles = compileFilesCheckbox.checked;
     const overwriteExisting = overwriteExistingCheckbox.checked;
@@ -342,12 +344,10 @@ function animatePlaceholder(element, values, duration = 3500) {
     return interval;
 }
 
-function showStatus(message, duration = null) {
-    const statusBar = document.getElementById('status-bar');
-    const statusMessage = document.getElementById('status-message');
-
+function showStatus(message, displayLoader = false, duration = null) {
     statusMessage.textContent = message;
-    statusBar.style.display = 'block';
+    statusBar.classList.remove('hidden');
+    statusBarLoadingSpinner.classList.toggle('hidden', !displayLoader);
 
     // Add the visible class to trigger the slide down effect
     setTimeout(() => {

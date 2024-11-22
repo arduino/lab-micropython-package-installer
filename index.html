@@ -53,11 +53,11 @@
                 </div>
                 <div>
                     <input type="checkbox" id="compile-files" checked />
-                    <label for="compile-files">Compile files before uploading</label>
+                    <label for="compile-files">Convert files to .mpy to optimize speed and size</label>
                 </div>
                 <div>
                     <input type="checkbox" id="overwrite-existing" checked />
-                    <label for="overwrite-existing">Overwrite existing packages</label>
+                    <label for="overwrite-existing">Allow overwriting existing packages</label>
                 </div>
             </div>
 
@@ -65,8 +65,9 @@
     </div>
     
     <!-- Status Bar -->
-    <div id="status-bar" class="status-bar" style="display: none;">
+    <div id="status-bar" class="status-bar hidden">
         <span id="status-message"></span>
+        <div class="loading-spinner small hidden"></div>
     </div>
 
     <!-- Divider -->
