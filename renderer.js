@@ -126,13 +126,6 @@ function displayDevices(deviceList, container) {
 
     selectedDeviceItem = null;
 
-    // Sort the device list by manufacturer name and device name
-    deviceList.sort((deviceA, deviceB) => {
-        const deviceAName = deviceA.manufacturer + deviceA.name;
-        const deviceBName = deviceB.manufacturer + deviceB.name;
-        return deviceAName.localeCompare(deviceBName);
-    });
-
     // Clear the device list
     container.innerHTML = "";
 
