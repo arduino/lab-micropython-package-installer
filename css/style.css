@@ -47,13 +47,6 @@
     overflow-y: auto;
 }
 
-/* Disabling buttons appearance */
-.lower-section button:disabled, .advanced-options button:disabled {
-    background-color: #ccc; /* Disabled state background */
-    color: #666; /* Disabled state text color */
-    cursor: not-allowed;
-}
-
 .main-container {
     width: 80%;
     margin: 0 auto;
@@ -78,51 +71,4 @@
 
 .hidden {
     display: none;
-}
-
-/* Status Bar */
-.status-bar {
-    display: flex;
-    justify-content: center;
-    gap: var(--main-flexbox-gap);
-    font-family: 'Roboto Mono', monospace;
-    background-color: rgba(0, 0, 0, 0.75);
-    color: white;
-    padding: 0px 20px; /* Set initial padding to 0 for smooth slide */
-    margin-top: 10px;
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s ease;
-}
-
-.status-bar.visible {
-    display: flex;
-    max-height: 480px;
-    padding: 10px 20px;
-    opacity: 1;
-}
-
-/* Loading Spinner */
-.loading-spinner {
-    border: 6px solid #eee;
-    border-top-color: var(--secondary-text-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-.loading-spinner.primary {
-    border-top-color: var(--main-control-color);
-}
-
-.loading-spinner.small {
-    width:24px;
-    height: 24px;
-    border-width: 4px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }

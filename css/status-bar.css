@@ -1,0 +1,20 @@
+.status-bar {
+    display: flex;
+    justify-content: center;
+    gap: var(--main-flexbox-gap);
+    font-family: 'Roboto Mono', monospace;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 0px 20px; /* Set initial padding to 0 for smooth slide */
+    margin-top: 10px;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s ease;
+}
+
+.status-bar.visible {
+    display: flex;
+    max-height: 480px;
+    padding: 10px 20px;
+    opacity: 1;
+}

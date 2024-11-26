@@ -61,6 +61,12 @@ button.link:hover {
 
 /* Style for disabled buttons */
 button.primary:hover:disabled {
-    background-color: var(--disabled-button-background);
+    background-color: var(--disabled-button-background-hover);
     color: var(--secondary-text-color);
+}
+
+button.primary:disabled {
+    background-color: var(--disabled-button-background); /* Disabled state background */
+    color: var(--secondary-text-color); /* Disabled state text color */
+    cursor: not-allowed;
 }
