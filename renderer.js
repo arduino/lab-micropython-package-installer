@@ -163,7 +163,15 @@ function renderPackageList(result, searchTerm = '') {
     }
 
     if(packages.length === 0){
-        packageList.innerHTML = '<div class="no-results">No packages found. Try a different search term.</div>';
+        packageList.innerHTML = `
+        <div class="no-results">
+            <p class="large-icon">🤷</p>
+            <p>No packages found. Try a different search term.</p>
+            <p>
+                Your favorite package is not listed? Consider adding it 
+                <a onclick="openBrowserWindow('https://github.com/arduino/package-index-py/edit/main/package-list.yaml')">here</a>.
+            </p>
+        </div>`;
         return;
     }
 
@@ -209,7 +217,7 @@ function renderPackageList(result, searchTerm = '') {
 
         moreInfoButton.addEventListener('click', () => {
             const targetURL = pkg.docs || pkg.url;
-            openPackageInfo(targetURL);
+            openBrowserWindow(targetURL);
         });
     });
 }
@@ -256,7 +264,7 @@ async function installPackage(package) {
     hideOverlay();
 }
 
-function openPackageInfo(url) {
+function openBrowserWindow(url) {
     if (url) {
         window.open(url, '_blank'); // Opens the URL in a new browser tab
     } else {

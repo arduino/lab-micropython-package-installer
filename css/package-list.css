@@ -11,6 +11,15 @@ button.read-more {
     padding: 0;
 }
 
+.no-results {
+    line-height: 2;
+    text-align: center;
+}
+
+.no-results .large-icon {
+    font-size: 5em;
+}
+
 .package-item {
     padding: 10px 0; /* Adjusted padding for vertical spacing */
     display: flex;
