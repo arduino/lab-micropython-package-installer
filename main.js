@@ -13,6 +13,8 @@ updateElectronApp()
 
 let mainWindow;
 let upyPackage;
+let packageManager;
+let deviceManager;
 const ARDUINO_VID = 0x2341;
 
 function createWindow() {
@@ -37,6 +39,8 @@ function createWindow() {
 app.on('ready', async() => {
   // Load the PackageManager class from the upy-package module
   upyPackage = await import('upy-package');
+  packageManager = new upyPackage.PackageManager();
+  deviceManager = new upyPackage.DeviceManager();
   createWindow();
 });
 
@@ -52,10 +56,9 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.handle('get-packages', async () => {
-  const packageManager = new upyPackage.PackageManager();
+ipcMain.handle('get-packages', async (event, searchTerm) => {
   try {
-      const packages = await packageManager.getPackageList();
+      let packages = await packageManager.findPackages(searchTerm);
       return { success: true, data: packages };
   } catch (error) {
       console.error('Failed to fetch packages:', error);
@@ -63,11 +66,10 @@ ipcMain.handle('get-packages', async () => {
   }
 });
 
-ipcMain.handle('get-boards', async () => {
-  const boardManager = new upyPackage.DeviceManager();
+ipcMain.handle('get-boards', async (event) => {
   try {
       // Pass ARDUINO_VID to filter for Arduino boards
-      return await boardManager.getConnectedDevices();
+      return await deviceManager.getConnectedDevices();
   } catch (error) {
       console.error('Failed to fetch boards:', error);
       return [];
@@ -75,11 +77,12 @@ ipcMain.handle('get-boards', async () => {
 });
 
 ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFiles, overwriteExisting) => {
-  const packageManager = new upyPackage.PackageManager(compileFiles, overwriteExisting);
-  const boardManager = new upyPackage.DeviceManager();
+  // Update the package manager settings based on the user input
+  packageManager.compileFiles = compileFiles;
+  packageManager.overwriteExisting = overwriteExisting;
 
   try {
-      const selectedBoard = await boardManager.getConnectedBoardByPort(serialPort);
+      const selectedBoard = await deviceManager.getConnectedBoardByPort(serialPort);
       if(!selectedBoard) {
         throw new Error(`No board found on port ${serialPort}`);
       }

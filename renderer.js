@@ -1,4 +1,3 @@
-let cachedPackages = []; // Global variable to cache packages
 let selectedDeviceItem = null;  // Variable to keep track of the selected board
 
 let customURLplaceholders = ['github:janedoe/button-mpy', 
@@ -17,24 +16,7 @@ const compileFilesCheckbox = document.getElementById('compile-files');
 const overwriteExistingCheckbox = document.getElementById('overwrite-existing');
 const githubUrlInput = document.getElementById('github-url');
 const statusBarLoadingSpinner = document.querySelector('#status-bar .loading-spinner');
-
-async function fetchPackages(){
-    const packageList = document.getElementById('package-list');
-
-    // Show loading spinner
-    packageList.innerHTML = '<div class="loading-spinner primary" style="margin: 50px auto;"></div>';
-    const result = await window.api.getPackages();
-    if(result.success){
-        cachedPackages = result.data;
-        renderPackageList(cachedPackages, ''); // Render the fetched packages
-        performSearch(); // Initial render with all packages                
-    } else {
-        console.error('Error fetching packages:', result.error);
-        document.getElementById('package-list').innerHTML = `
-            <div>Couldn't load packages. Check your Internet connection and try again.</div>
-            <div><a onclick="fetchPackages();">Reload</a>`;
-    }
-}
+const packageList = document.getElementById('package-list');
 
 async function reloadDeviceList() {
     setInstallButtonsEnabled(false); // Disable until a board is selected
@@ -44,7 +26,8 @@ async function reloadDeviceList() {
 
 // Fetch package list once on app load and cache it
 document.addEventListener('DOMContentLoaded', async () => {
-    await fetchPackages();
+    // Show loading spinner
+    packageList.innerHTML = '<div class="loading-spinner primary" style="margin: 50px auto;"></div>';
     
     deviceSelectionList.addEventListener("device-selected", (event) => {
         selectedDeviceItem = event.target;
@@ -62,6 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Prepend each value with same text
     const placeholders = customURLplaceholders.map(value => 'Enter custom URL e.g. ' + value);
     animatePlaceholder(githubUrlInput, placeholders);
+    
+    performSearch(); // Display complete list of packages
 });
 
 function selectDevice(deviceItem) {
@@ -157,25 +142,30 @@ function setInstallButtonsEnabled(enabled) {
     manualInstallButton.disabled = !enabled;
 }
 
-function performSearch() {    
-    const searchTerm = searchField.value.toLowerCase();
-
-    // Use cached package list for filtering
-    const filteredPackages = searchTerm === '' ? cachedPackages : cachedPackages.filter(pkg =>
-        pkg.name.toLowerCase().includes(searchTerm) ||
-        (pkg.author && pkg.author.toLowerCase().includes(searchTerm))
-        || (pkg.description && pkg.description.toLowerCase().includes(searchTerm))
-        || (pkg.tags && pkg.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-    );
-
-    renderPackageList(filteredPackages, searchTerm);
-    updateResultsCount(filteredPackages.length, searchTerm);
+async function performSearch() {    
+    const searchTerm = searchField.value;
+    const result = await window.api.getPackages(searchTerm); // Use the API to filter packages
+    renderPackageList(result, searchTerm);
+    updateResultsCount(result.data?.length, searchTerm);
     setInstallButtonsEnabled(selectedDeviceItem !== null); // Disable buttons if no board is selected
 }
 
-function renderPackageList(packages, searchTerm) {
-    const packageList = document.getElementById('package-list');
+function renderPackageList(result, searchTerm = '') {
+    const packages = result.data;
     packageList.innerHTML = '';
+
+    if(!result.success){
+        console.error('Error retrieving packages:', result.error);
+        document.getElementById('package-list').innerHTML = `
+            <div>Couldn't load packages. Check your Internet connection and try again.</div>
+            <div><a onclick="fetchPackages();">Reload</a>`;
+        return;
+    }
+
+    if(packages.length === 0){
+        packageList.innerHTML = '<div class="no-results">No packages found. Try a different search term.</div>';
+        return;
+    }
 
     packages.forEach(pkg => {
         const isExactMatch = pkg.name.toLowerCase() === searchTerm;
