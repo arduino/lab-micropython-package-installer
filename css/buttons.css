@@ -62,7 +62,6 @@ button.link:hover {
 /* Style for disabled buttons */
 button.primary:hover:disabled {
     background-color: var(--disabled-button-background-hover);
-    color: var(--secondary-text-color);
 }
 
 button.primary:disabled {

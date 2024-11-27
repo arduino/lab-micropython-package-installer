@@ -9,8 +9,8 @@
     --main-control-color-hover: #005c5f;
     --main-flexbox-gap: 16px;
     --secondary-text-color: #87898b;
-    --disabled-button-background: #ccc;
-    --disabled-button-background-hover: #e0e0e0;
+    --disabled-button-background: #e0e0e0;
+    --disabled-button-background-hover: #e6e6e6;
     --selection-color: #73A3F8;
 }
 
