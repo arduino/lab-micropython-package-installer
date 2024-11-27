@@ -176,7 +176,7 @@ function renderPackageList(result, searchTerm = '') {
     }
 
     packages.forEach(pkg => {
-        const isExactMatch = pkg.name.toLowerCase() === searchTerm;
+        const isExactMatch = pkg.name.toLowerCase() === searchTerm.toLowerCase();
 
         const packageItem = document.createElement('li');
         packageItem.className = 'package-item';
@@ -248,7 +248,7 @@ async function installPackage(package) {
     const packageDesignator = package.name || package.url;
     toggleUserInteraction(false);
     showOverlay();
-    showStatus(`⌛️ Installing ${packageDesignator} on board at ${serialPort}...`, true);
+    showStatus(`⌛️ Installing '${packageDesignator}' on board at ${serialPort}...`, true);
     
     const compileFiles = compileFilesCheckbox.checked;
     const overwriteExisting = overwriteExistingCheckbox.checked;
