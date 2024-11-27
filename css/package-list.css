@@ -12,12 +12,13 @@ button.read-more {
 }
 
 .no-results {
-    line-height: 2;
+    line-height: 1.8;
     text-align: center;
 }
 
 .no-results .large-icon {
     font-size: 5em;
+    line-height: 1.5;
 }
 
 .package-item {
