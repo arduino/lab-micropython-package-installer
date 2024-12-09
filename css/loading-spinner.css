@@ -1,4 +1,5 @@
 .loading-spinner {
+    flex-shrink: 0;
     border: 6px solid #eee;
     border-top-color: var(--secondary-text-color);
     border-radius: 50%;
