@@ -6,7 +6,6 @@
     background-color: rgba(0, 0, 0, 0.75);
     color: white;
     padding: 0px 20px; /* Set initial padding to 0 for smooth slide */
-    margin-top: 10px;
     max-height: 0;
     opacity: 0;
     transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.3s ease;

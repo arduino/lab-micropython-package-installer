@@ -46,6 +46,11 @@ button.secondary:hover {
     background-color: rgba(0, 92, 95, .2);
 }
 
+button.secondary.small {
+    padding: 2px 12px;
+    font-size: 0.7rem;
+}
+
 button.link {
     color: var(--main-control-color) !important;
     text-decoration: none;
