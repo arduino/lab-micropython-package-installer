@@ -29,6 +29,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show loading spinner
     packageList.innerHTML = '<div class="loading-spinner primary" style="margin: 50px auto;"></div>';
     
+    // Load initial state of the checkboxes from local storage
+    compileFilesCheckbox.checked = localStorage.getItem('compileFiles') === 'true';
+    overwriteExistingCheckbox.checked = localStorage.getItem('overwriteExisting') === 'true';
+
+    compileFilesCheckbox.addEventListener('change', () => {
+        // Persist the user's selection in local storage
+        localStorage.setItem('compileFiles', compileFilesCheckbox.checked);
+    });
+
+    overwriteExistingCheckbox.addEventListener('change', () => {
+        // Persist the user's selection in local storage
+        localStorage.setItem('overwriteExisting', overwriteExistingCheckbox.checked);
+    });
+
     deviceSelectionList.addEventListener("device-selected", (event) => {
         selectedDeviceItem = event.target;
         console.log("Selected device item:", selectedDeviceItem);
