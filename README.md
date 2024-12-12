@@ -26,6 +26,8 @@ Follow the on-screen prompts to download and install the MicroPython firmware.
 - Arduino Nano ESP32
 - Arduino Nano 33 BLE
 
+**Note:** This tool may work for 3rd party boards too. This is however not officially supported.
+
 ## ⚙️ Installation
 
 You can download the binary for your operating system from the [release page](https://github.com/arduino/lab-micropython-package-installer/releases).
