@@ -30,8 +30,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     packageList.innerHTML = '<div class="loading-spinner primary" style="margin: 50px auto;"></div>';
     
     // Load initial state of the checkboxes from local storage
-    compileFilesCheckbox.checked = localStorage.getItem('compileFiles') === 'true';
-    overwriteExistingCheckbox.checked = localStorage.getItem('overwriteExisting') === 'true';
+    const compileFilesPref = localStorage.getItem('compileFiles');
+    const overwriteExistingPref = localStorage.getItem('overwriteExisting');
+    compileFilesCheckbox.checked = compileFilesPref === 'true' || compileFilesPref === null;
+    overwriteExistingCheckbox.checked = overwriteExistingPref === 'true' || overwriteExistingPref === null;
 
     compileFilesCheckbox.addEventListener('change', () => {
         // Persist the user's selection in local storage
