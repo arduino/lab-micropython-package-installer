@@ -98,7 +98,7 @@ ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFil
       console.error(`Failed to install package ${packageDesignator}:`, error);
       
       // Check if error contains "Resource busy" and return a more user-friendly message
-      if(error.message.includes('Resource busy')) {
+      if(error.message.includes('Resource busy') || error.message.includes('Access denied')) {
         return { success: false, error: "Couldn't connect to the board. Close any other program using it and try again." };
       }
       return { success: false, error: error.message };
