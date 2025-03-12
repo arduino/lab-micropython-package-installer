@@ -2,10 +2,21 @@ if (require('electron-squirrel-startup')) return;
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 
+const APP_SCHEME_NAME = 'micropython-package-installer';
+const ARDUINO_VID = 0x2341;
+
 // Handle events from windows squirrel installer
 if (process.platform === "win32" && handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
+}
+
+// On macOS the scheme is already registered through the app bundle metadata
+// but on Windows and Linux we need to register it manually
+if (process.platform !== "darwin" && !app.isDefaultProtocolClient(APP_SCHEME_NAME)) {
+  if(!app.setAsDefaultProtocolClient(APP_SCHEME_NAME)) {
+    console.error('Failed to register custom URL scheme', APP_SCHEME_NAME);
+  }
 }
 
 const { updateElectronApp } = require('update-electron-app')
@@ -15,7 +26,6 @@ let mainWindow;
 let upyPackage;
 let packageManager;
 let deviceManager;
-const ARDUINO_VID = 0x2341;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
