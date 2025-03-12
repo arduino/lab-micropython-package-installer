@@ -8,6 +8,7 @@ let customURLplaceholders = ['github:janedoe/button-mpy',
 ];
 
 const statusBar = document.getElementById('status-bar');
+const statusBarCloseButton = document.getElementById('status-bar-close');
 const statusMessage = document.getElementById('status-message');
 const deviceSelectionList = document.querySelector(".item-selection-list");
 const reloadDeviceListLink = document.getElementById("reload-link");
@@ -51,6 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Enable the install buttons if a board is selected
         setInstallButtonsEnabled(true);
     });
+
+    statusBarCloseButton.addEventListener('click', hideStatus);
 
     reloadDeviceListLink.addEventListener('click', async () => {
         await reloadDeviceList();
@@ -335,6 +338,9 @@ function showStatus(message, displayLoader = false, duration = null) {
     statusMessage.textContent = message;
     statusBar.classList.remove('hidden');
     statusBarLoadingSpinner.classList.toggle('hidden', !displayLoader);
+    
+    // Hide close button when loader is displayed
+    statusBarCloseButton.classList.toggle('hidden', displayLoader);
 
     // Add the visible class to trigger the slide down effect
     setTimeout(() => {
