@@ -82,7 +82,8 @@ module.exports = {
     ignore: filesToExclude,
     prune: true,
     derefSymlinks: true,
-    protocols: [ {
+    protocols: [ { 
+      // Register custom URL scheme on macOS
       name: 'micropython-package-installer',
       schemes: ['micropython-package-installer']
     }],
