@@ -135,6 +135,11 @@ module.exports = {
     {
       name: '@electron-forge/maker-deb',
       platforms: ['linux'],
+      config: {
+        options: {
+          mimeType: ['x-scheme-handler/micropython-package-installer']
+        }
+      }
     },
   ],
   publishers: [
