@@ -103,7 +103,7 @@ ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFil
       return { success: true };
   } catch (error) {
       let packageDesignator = aPackage.name || aPackage.url;
-      console.error(`Failed to install package ${packageDesignator}:`, error);
+      console.error(`Failed to install package ${packageDesignator}:`, error.message);
       
       // Check if error contains "Resource busy" and return a more user-friendly message
       if(error.message.includes('Resource busy') || error.message.includes('Access denied')) {
