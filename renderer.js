@@ -251,6 +251,8 @@ function toggleUserInteraction(enabled) {
     searchField.disabled = !enabled;
     githubUrlInput.disabled = !enabled;
     manualInstallButton.disabled = !enabled;
+    compileFilesCheckbox.disabled = !enabled;
+    overwriteExistingCheckbox.disabled = !enabled;
     reloadDeviceListLink.style.pointerEvents = enabled ? 'auto' : 'none';
     boardItems.forEach(board => board.style.pointerEvents = enabled ? 'auto' : 'none');
 
@@ -354,14 +356,12 @@ function showStatus(message, displayLoader = false, duration = null) {
 }
 
 function hideStatus() {
-    const statusBar = document.getElementById('status-bar');
-
     // Remove the visible class to trigger the slide-up effect
     statusBar.classList.remove('visible');
 
     // After the transition ends, hide the element
     setTimeout(() => {
-        statusBar.style.display = 'none';
+        statusBar.classList.add('hidden');
     }, 500); // Match this duration with the CSS transition duration
 }
 
