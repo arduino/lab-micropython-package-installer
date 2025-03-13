@@ -1,6 +1,6 @@
 {
   "name": "micropython-package-installer",
-  "version": "1.0.0",
+  "version": "1.0.1-beta.1",
   "description": "A tool to install MicroPython packages onto supported Arduino boards.",
   "main": "main.js",
   "scripts": {
@@ -40,6 +40,6 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
     "update-electron-app": "^3.0.0",
-    "upy-package": "github:arduino/upy-package#v1.0.0"
+    "upy-package": "github:arduino/upy-package#v1.0.1"
   }
 }

@@ -82,7 +82,8 @@ module.exports = {
     ignore: filesToExclude,
     prune: true,
     derefSymlinks: true,
-    protocols: [ {
+    protocols: [ { 
+      // Register custom URL scheme on macOS
       name: 'micropython-package-installer',
       schemes: ['micropython-package-installer']
     }],
@@ -134,6 +135,11 @@ module.exports = {
     {
       name: '@electron-forge/maker-deb',
       platforms: ['linux'],
+      config: {
+        options: {
+          mimeType: ['x-scheme-handler/micropython-package-installer']
+        }
+      }
     },
   ],
   publishers: [

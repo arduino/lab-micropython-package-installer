@@ -2,10 +2,21 @@ if (require('electron-squirrel-startup')) return;
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 
+const APP_SCHEME_NAME = 'micropython-package-installer';
+const ARDUINO_VID = 0x2341;
+
 // Handle events from windows squirrel installer
 if (process.platform === "win32" && handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
+}
+
+// On macOS the scheme is already registered through the app bundle metadata
+// but on Windows and Linux we need to register it manually
+if (process.platform !== "darwin" && !app.isDefaultProtocolClient(APP_SCHEME_NAME)) {
+  if(!app.setAsDefaultProtocolClient(APP_SCHEME_NAME)) {
+    console.error('Failed to register custom URL scheme', APP_SCHEME_NAME);
+  }
 }
 
 const { updateElectronApp } = require('update-electron-app')
@@ -15,7 +26,6 @@ let mainWindow;
 let upyPackage;
 let packageManager;
 let deviceManager;
-const ARDUINO_VID = 0x2341;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -45,9 +55,7 @@ app.on('ready', async() => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('activate', () => {
@@ -95,7 +103,7 @@ ipcMain.handle('install-package', async (event, aPackage, serialPort, compileFil
       return { success: true };
   } catch (error) {
       let packageDesignator = aPackage.name || aPackage.url;
-      console.error(`Failed to install package ${packageDesignator}:`, error);
+      console.error(`Failed to install package ${packageDesignator}:`, error.message);
       
       // Check if error contains "Resource busy" and return a more user-friendly message
       if(error.message.includes('Resource busy') || error.message.includes('Access denied')) {
